@@ -1,8 +1,6 @@
 # life-rpg
 A gamified habit tracker system inspired by Solo Leveling - level up your life through daily quests and challenges
 
-Я подготовлю для вас README на русском и английском языках для репозитория life-rpg с тематикой Solo Leveling.
-
 ## README.md (Русский)
 
 ```markdown

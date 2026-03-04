@@ -1,0 +1,3135 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Life RPG">
+<meta name="theme-color" content="#080d18" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f4f7fc" media="(prefers-color-scheme: light)">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔</text></svg>">
+<title>⚔ LIFE RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   THEME VARIABLES
+═══════════════════════════════════════════════ */
+:root {
+  --transition: all 0.3s cubic-bezier(0.25,1,0.5,1);
+}
+
+[data-theme="dark"] {
+  --bg-deep:    #05080f;
+  --bg-main:    #080d18;
+  --bg-panel:   #0c1220;
+  --bg-card:    #101828;
+  --bg-hover:   #141e30;
+  --border:     #1a2d4a;
+  --border-mid: #1e3560;
+  --border-hi:  #2a4a7f;
+  --text-pri:   #dce8f5;
+  --text-sec:   #7a9ab8;
+  --text-muted: #3d5a78;
+  --accent:     #00c8ff;
+  --accent-dim: rgba(0,200,255,0.12);
+  --accent2:    #ff7043;
+  --accent3:    #69f070;
+  --gold:       #ffc107;
+  --gold-dim:   rgba(255,193,7,0.12);
+  --purple:     #b57aff;
+  --glow-a:     0 0 24px rgba(0,200,255,0.35);
+  --glow-g:     0 0 24px rgba(255,193,7,0.35);
+  --glow-p:     0 0 24px rgba(181,122,255,0.35);
+  --shadow:     0 8px 32px rgba(0,0,0,0.6);
+  --bg-grid:    rgba(0,200,255,0.025);
+}
+
+[data-theme="light"] {
+  --bg-deep:    #eef2f8;
+  --bg-main:    #f4f7fc;
+  --bg-panel:   #ffffff;
+  --bg-card:    #fafbfd;
+  --bg-hover:   #f0f4fa;
+  --border:     #dde5f0;
+  --border-mid: #c8d5e8;
+  --border-hi:  #a8bdd8;
+  --text-pri:   #1a2a3a;
+  --text-sec:   #4a6080;
+  --text-muted: #8aa0be;
+  --accent:     #0080cc;
+  --accent-dim: rgba(0,128,204,0.1);
+  --accent2:    #e05020;
+  --accent3:    #2d9e34;
+  --gold:       #d4900a;
+  --gold-dim:   rgba(212,144,10,0.1);
+  --purple:     #7040cc;
+  --glow-a:     0 2px 12px rgba(0,128,204,0.2);
+  --glow-g:     0 2px 12px rgba(212,144,10,0.2);
+  --glow-p:     0 2px 12px rgba(112,64,204,0.2);
+  --shadow:     0 4px 24px rgba(0,0,0,0.1);
+  --bg-grid:    transparent;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--bg-main);
+  color: var(--text-pri);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+[data-theme="dark"] body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events:none; z-index:0;
+}
+
+[data-theme="dark"] body::after {
+  content:'';
+  position:fixed; top:-200px; left:0; right:0; height:300px;
+  background: linear-gradient(transparent, rgba(0,200,255,0.025), transparent);
+  animation: scan 8s linear infinite;
+  pointer-events:none; z-index:0;
+}
+
+@keyframes scan { to { top:100vh; } }
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.app { position:relative; z-index:1; display:flex; height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: var(--transition);
+}
+
+.sidebar-logo {
+  padding: 20px 18px 16px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-shadow: var(--glow-a);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-logo .logo-icon { font-size: 20px; }
+
+.nav-section {
+  padding: 12px 10px 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  margin: 2px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-sec);
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.nav-item:hover {
+  background: var(--accent-dim);
+  color: var(--text-pri);
+  border-color: var(--border-mid);
+}
+
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: rgba(0,200,255,0.25);
+  font-weight: 600;
+}
+
+.nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  padding: 1px 6px;
+  border-radius: 10px;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-pri);
+}
+
+.topbar-right { display:flex; align-items:center; gap:10px; }
+
+.theme-toggle {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 20px;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-sec);
+  transition: var(--transition);
+  display: flex; align-items:center; gap:6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.content { flex:1; padding: 24px; }
+
+/* PAGES */
+.page { display:none; }
+.page.active { display:block; }
+
+/* ═══════════════════════════════════════════════
+   COMPONENTS
+═══════════════════════════════════════════════ */
+
+/* Cards */
+.card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  transition: var(--transition);
+}
+
+.card:hover { border-color: var(--border-hi); }
+
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title .ct-icon { color: var(--accent); font-size: 14px; }
+
+/* Grids */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.full { grid-column: 1 / -1; }
+.mb { margin-bottom: 16px; }
+
+/* Buttons */
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #0099cc);
+  color: #000;
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: var(--glow-a); }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-mid);
+  color: var(--text-sec);
+}
+
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), #e6a800);
+  color: #000;
+}
+
+.btn-gold:hover { box-shadow: var(--glow-g); }
+
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* Inputs */
+.input {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: var(--text-pri);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.input::placeholder { color: var(--text-muted); }
+
+select.input { cursor: pointer; }
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-family: 'Share Tech Mono', monospace;
+  font-weight: 500;
+}
+
+.badge-blue { background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(0,200,255,0.2); }
+.badge-gold { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(255,193,7,0.2); }
+.badge-green { background: rgba(105,240,112,0.1); color: var(--accent3); border: 1px solid rgba(105,240,112,0.2); }
+.badge-purple { background: rgba(181,122,255,0.1); color: var(--purple); border: 1px solid rgba(181,122,255,0.2); }
+.badge-red { background: rgba(255,112,67,0.1); color: var(--accent2); border: 1px solid rgba(255,112,67,0.2); }
+
+/* XP Bar */
+.xp-bar-outer {
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.xp-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  transition: width 1.2s cubic-bezier(0.25,1,0.5,1);
+  box-shadow: 0 0 8px rgba(0,200,255,0.5);
+  width: 0%;
+}
+
+/* Progress ring */
+.ring-wrap { position: relative; display: inline-flex; align-items:center; justify-content:center; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-text {
+  position: absolute;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════
+   CHARACTER STATUS
+═══════════════════════════════════════════════ */
+.char-panel {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.char-avatar-wrap {
+  text-align: center;
+}
+
+.char-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  margin: 0 auto 10px;
+  border: 2px solid var(--accent);
+  box-shadow: var(--glow-a), 0 0 50px rgba(0,200,255,0.15);
+  position: relative;
+}
+
+.char-avatar::after {
+  content:'';
+  position:absolute; inset:-5px;
+  border-radius:50%;
+  border:1px solid rgba(0,200,255,0.2);
+  animation: pulse-ring 3s ease infinite;
+}
+
+@keyframes pulse-ring {
+  0%,100% { transform:scale(1); opacity:0.5; }
+  50% { transform:scale(1.08); opacity:0; }
+}
+
+.char-class {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--purple);
+  margin-bottom: 4px;
+}
+
+.char-name {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-pri);
+}
+
+.char-info { padding-top: 4px; }
+
+.char-level-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.char-level {
+  font-family: 'Cinzel', serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: var(--glow-g);
+  line-height: 1;
+}
+
+.char-title {
+  font-size: 14px;
+  color: var(--text-sec);
+  font-weight: 500;
+}
+
+.char-xp-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.stat-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 10px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.stat-box:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+
+.stat-val {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════
+   QUESTS (TASKS)
+═══════════════════════════════════════════════ */
+.quest-form {
+  display: grid;
+  grid-template-columns: 1fr 130px 120px auto;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: end;
+}
+
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-size:11px; color:var(--text-muted); font-family:'Share Tech Mono',monospace; letter-spacing:1px; }
+
+.quest-list { display:flex; flex-direction:column; gap:8px; }
+
+.quest-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: var(--transition);
+  cursor: pointer;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(-12px); }
+  to { opacity:1; transform:translateX(0); }
+}
+
+.quest-item:hover { border-color: var(--border-hi); background: var(--bg-hover); }
+
+.quest-item.done {
+  opacity: 0.5;
+  border-color: rgba(105,240,112,0.2);
+}
+
+.quest-item.overdue { border-left: 3px solid var(--accent2); }
+
+.quest-check {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  border: 2px solid var(--border-mid);
+  display: flex; align-items:center; justify-content:center;
+  flex-shrink: 0;
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+.quest-item.done .quest-check {
+  background: rgba(105,240,112,0.2);
+  border-color: var(--accent3);
+  color: var(--accent3);
+}
+
+.quest-content { flex:1; min-width:0; }
+
+.quest-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-pri);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quest-item.done .quest-name { text-decoration: line-through; color: var(--text-muted); }
+
+.quest-meta {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.quest-actions {
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.quest-item:hover .quest-actions { opacity: 1; }
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 14px;
+  padding: 2px 4px;
+  transition: var(--transition);
+  border-radius: 4px;
+}
+
+.icon-btn:hover { color: var(--accent2); background: rgba(255,112,67,0.1); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.tab {
+  padding: 7px 18px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.tab.active {
+  background: var(--bg-panel);
+  color: var(--accent);
+  border-color: var(--border-mid);
+}
+
+/* ═══════════════════════════════════════════════
+   PARA SYSTEM
+═══════════════════════════════════════════════ */
+.para-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.para-tab {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  background: var(--bg-card);
+}
+
+.para-tab .pt-icon { font-size: 22px; display:block; margin-bottom:4px; }
+.para-tab .pt-name { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1px; color: var(--text-muted); }
+.para-tab .pt-count { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top:2px; }
+
+.para-tab.active { border-color: var(--accent); background: var(--accent-dim); }
+.para-tab.active .pt-name { color: var(--accent); }
+
+.para-items { display:flex; flex-direction:column; gap:8px; }
+
+.para-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: var(--transition);
+  animation: slideIn 0.3s ease;
+}
+
+.para-item:hover { border-color: var(--border-hi); background: var(--bg-hover); }
+
+.para-item-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.para-item-title { font-size:14px; font-weight:600; color:var(--text-pri); margin-bottom:3px; }
+.para-item-desc { font-size:12px; color:var(--text-sec); }
+.para-item-right { margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+
+/* ═══════════════════════════════════════════════
+   LIFE AREAS
+═══════════════════════════════════════════════ */
+.areas-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+
+.area-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.area-card:hover { border-color: var(--border-hi); transform: translateY(-3px); box-shadow: var(--shadow); }
+
+.area-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.area-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 22px;
+}
+
+.area-name { font-family:'Cinzel',serif; font-size:13px; font-weight:700; color:var(--text-pri); margin-bottom:2px; }
+.area-tasks { font-size:11px; color:var(--text-sec); font-family:'Share Tech Mono',monospace; }
+
+.area-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: 'Share Tech Mono', monospace;
+  margin-bottom: 5px;
+}
+
+.area-xp-bar {
+  height: 6px;
+  background: var(--bg-panel);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.area-xp-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease;
+}
+
+.area-stats {
+  display: flex;
+  gap: 10px;
+}
+
+.area-stat {
+  flex: 1;
+  background: var(--bg-panel);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.area-stat-val { font-family:'Cinzel',serif; font-size:16px; font-weight:700; line-height:1; }
+.area-stat-lbl { font-size:10px; color:var(--text-muted); font-family:'Share Tech Mono',monospace; margin-top:2px; }
+
+/* ═══════════════════════════════════════════════
+   HABITS
+═══════════════════════════════════════════════ */
+.habit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.habit-row:last-child { border-bottom: none; }
+
+.habit-icon { font-size: 20px; width: 28px; text-align:center; flex-shrink:0; }
+.habit-name { flex:1; font-size:14px; font-weight:600; }
+
+.habit-streak {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  color: var(--accent2);
+  min-width: 40px;
+}
+
+.habit-days-row {
+  display: flex;
+  gap: 4px;
+}
+
+.hday {
+  width: 26px; height: 26px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size: 9px;
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.hday:hover:not(.hday-done) { border-color: var(--accent); color: var(--accent); }
+
+.hday.hday-done {
+  background: linear-gradient(135deg, var(--accent3), #2da830);
+  border-color: var(--accent3);
+  color: #000;
+  font-size: 12px;
+  box-shadow: 0 0 8px rgba(105,240,112,0.3);
+}
+
+/* ═══════════════════════════════════════════════
+   ACHIEVEMENTS
+═══════════════════════════════════════════════ */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.ach-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.ach-item.unlocked {
+  border-color: rgba(255,193,7,0.4);
+  background: var(--gold-dim);
+}
+
+.ach-item.unlocked::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.ach-icon { font-size:30px; display:block; margin-bottom:8px; transition:var(--transition); }
+.ach-item:not(.unlocked) .ach-icon { filter: grayscale(1); opacity:0.4; }
+
+.ach-name { font-size:11px; font-weight:600; color:var(--text-muted); line-height:1.3; }
+.ach-item.unlocked .ach-name { color: var(--gold); }
+
+.ach-xp {
+  margin-top:5px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px;
+  color: var(--text-muted);
+}
+
+.ach-item.unlocked .ach-xp { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════
+   PLANNER
+═══════════════════════════════════════════════ */
+.planner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.plan-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-pri);
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-day {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  transition: var(--transition);
+}
+
+.plan-day.today { border-color: var(--accent); background: var(--accent-dim); }
+
+.plan-day-name {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  width: 26px;
+  flex-shrink: 0;
+}
+
+.plan-day.today .plan-day-name { color: var(--accent); }
+
+.plan-day-bar {
+  flex:1;
+  height:6px;
+  background: var(--bg-panel);
+  border-radius: 3px;
+  overflow:hidden;
+}
+
+.plan-day-fill {
+  height:100%;
+  border-radius:3px;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+}
+
+.plan-day-xp {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--text-sec);
+  width: 50px;
+  text-align: right;
+}
+
+/* ═══════════════════════════════════════════════
+   OVERLAY (LEVEL UP / MODAL)
+═══════════════════════════════════════════════ */
+.overlay {
+  position: fixed; inset:0;
+  background: rgba(0,0,0,0.75);
+  display:flex; align-items:center; justify-content:center;
+  z-index:1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+
+.overlay-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  box-shadow: var(--glow-g), var(--shadow);
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 380px;
+  width: 90%;
+}
+
+@keyframes popIn {
+  from { transform:scale(0.7); opacity:0; }
+  to { transform:scale(1); opacity:1; }
+}
+
+.overlay-icon { font-size:60px; display:block; margin-bottom:16px; }
+.overlay-title { font-family:'Cinzel',serif; font-size:32px; font-weight:900; color:var(--gold); text-shadow:var(--glow-g); margin-bottom:8px; }
+.overlay-sub { font-size:15px; color:var(--text-sec); margin-bottom:24px; line-height:1.5; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-hi);
+  border-radius: 12px;
+  padding: 14px 18px;
+  min-width: 240px;
+  max-width: 320px;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  z-index:999;
+}
+
+@keyframes toastIn {
+  from { opacity:0; transform:translateX(30px) scale(0.9); }
+  to { opacity:1; transform:translateX(0) scale(1); }
+}
+
+.toast-title { font-family:'Cinzel',serif; font-size:12px; letter-spacing:1px; margin-bottom:3px; }
+.toast-text { font-size:13px; color:var(--text-sec); }
+
+.toast-success { border-color: rgba(105,240,112,0.4); }
+.toast-success .toast-title { color: var(--accent3); }
+.toast-info .toast-title { color: var(--accent); }
+.toast-gold { border-color: rgba(255,193,7,0.4); }
+.toast-gold .toast-title { color: var(--gold); }
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+.fade-in {
+  animation: fadeSlideUp 0.4s ease backwards;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(12px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+.fade-in:nth-child(1) { animation-delay:0.05s; }
+.fade-in:nth-child(2) { animation-delay:0.1s; }
+.fade-in:nth-child(3) { animation-delay:0.15s; }
+.fade-in:nth-child(4) { animation-delay:0.2s; }
+.fade-in:nth-child(5) { animation-delay:0.25s; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border-hi); border-radius:3px; }
+
+/* Empty State */
+.empty-state {
+  text-align:center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.empty-state .empty-icon { font-size:40px; display:block; margin-bottom:10px; opacity:0.4; }
+.empty-state .empty-text { font-size:13px; }
+
+/* Modal */
+.modal {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.6);
+  display:flex; align-items:center; justify-content:center;
+  z-index:500;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-box {
+  background:var(--bg-panel);
+  border:1px solid var(--border-hi);
+  border-radius:16px;
+  padding:28px;
+  width:480px;
+  max-width:95vw;
+  box-shadow:var(--shadow);
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.modal-title {
+  font-family:'Cinzel',serif;
+  font-size:16px;
+  font-weight:700;
+  color:var(--text-pri);
+  margin-bottom:20px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+}
+
+.modal-footer {
+  display:flex; gap:10px; justify-content:flex-end;
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+}
+
+/* ── SIDEBAR COLLAPSE ── */
+.sidebar {
+  overflow-x: hidden;
+}
+.sidebar.collapsed { width: 60px !important; }
+
+.sidebar-logo {
+  justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.logo-text { transition: opacity 0.25s, max-width 0.3s; max-width: 200px; overflow: hidden; }
+.sidebar.collapsed .logo-text { opacity: 0; max-width: 0; }
+
+.sidebar-collapse-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 3px 5px;
+  border-radius: 6px;
+  transition: var(--transition);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.sidebar-collapse-btn:hover { color: var(--accent); background: var(--accent-dim); }
+.sidebar.collapsed .sidebar-collapse-btn { transform: rotate(180deg); }
+
+.nav-section { white-space: nowrap; overflow: hidden; transition: opacity 0.2s, padding 0.3s; }
+.sidebar.collapsed .nav-section { opacity: 0; padding-top: 4px; padding-bottom: 0; font-size: 0; }
+
+.nav-item { overflow: hidden; white-space: nowrap; position: relative; }
+.sidebar.collapsed .nav-item { padding: 10px 0; justify-content: center; }
+
+.nav-label { transition: opacity 0.2s; }
+.sidebar.collapsed .nav-label { opacity: 0; width: 0; display: inline-block; overflow: hidden; }
+
+.nav-badge { transition: opacity 0.2s, width 0.2s; }
+.sidebar.collapsed .nav-badge { opacity: 0; width: 0; overflow: hidden; padding: 0; margin: 0; }
+
+/* Tooltip when collapsed */
+.sidebar.collapsed .nav-item::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 52px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border-hi);
+  color: var(--text-pri);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 200;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.sidebar.collapsed .nav-item:hover::after { opacity: 1; }
+
+.sidebar-bottom { overflow: hidden; }
+
+/* ═══════════════════════════════════════════════
+   MOBILE RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+
+  /* App layout: stack vertically */
+  .app { flex-direction: column; height: auto; min-height: 100vh; }
+
+  /* Sidebar becomes bottom nav bar */
+  .sidebar {
+    width: 100% !important;
+    height: auto;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    order: 2;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Hide desktop-only elements on mobile */
+  .desktop-only { display: none !important; }
+
+  /* Nav items as icon tabs */
+  .nav-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 6px !important;
+    margin: 4px 2px !important;
+    border-radius: 10px;
+    min-width: 52px;
+    flex-shrink: 0;
+    border: none !important;
+  }
+
+  .nav-item .nav-icon { width: auto; font-size: 20px; }
+
+  .nav-label {
+    font-size: 9px !important;
+    opacity: 1 !important;
+    width: auto !important;
+    display: block !important;
+    overflow: visible !important;
+    color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .nav-item.active .nav-label { color: var(--accent); }
+
+  .nav-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    opacity: 1 !important;
+    width: auto !important;
+    padding: 1px 5px !important;
+    margin: 0 !important;
+    font-size: 9px;
+  }
+
+  .nav-item { position: relative; }
+
+  /* Main area: full width, add bottom padding for nav */
+  .main { order: 1; width: 100%; padding-bottom: 70px; }
+
+  /* Topbar */
+  .topbar { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
+  .page-title { font-size: 13px; }
+  .topbar-right { gap: 6px; }
+  .theme-toggle span:last-child { display: none; }  /* hide "Светлая" text */
+  .theme-toggle { padding: 5px 8px; }
+
+  /* Content padding */
+  .content { padding: 14px; }
+
+  /* Cards */
+  .card { padding: 14px; border-radius: 10px; }
+
+  /* Grids → single column */
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+  .full { grid-column: 1 !important; }
+
+  /* Character panel */
+  .char-panel { grid-template-columns: 1fr !important; gap: 12px; }
+  .char-avatar-wrap { display: flex; align-items: center; gap: 14px; text-align: left; }
+  .char-avatar { width: 70px; height: 70px; font-size: 30px; margin: 0; }
+
+  /* Stats row */
+  .stats-row { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .stat-box { padding: 8px 4px; }
+  .stat-val { font-size: 16px; }
+  .stat-lbl { font-size: 9px; }
+
+  /* Quest form → stacked */
+  .quest-form { grid-template-columns: 1fr !important; gap: 8px; }
+
+  /* Areas grid */
+  .areas-grid { grid-template-columns: 1fr 1fr !important; gap: 12px; }
+  .area-card { padding: 12px; }
+  .area-stats { gap: 6px; }
+  .area-stat-val { font-size: 13px; }
+
+  /* Habits */
+  .habit-days-row { gap: 3px; }
+  .hday { width: 22px; height: 22px; font-size: 8px; border-radius: 4px; }
+
+  /* Achievements */
+  .achievements-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px; }
+  .ach-icon { font-size: 22px; }
+  .ach-name { font-size: 10px; }
+
+  /* Para tabs */
+  .para-tabs { gap: 4px; }
+  .para-tab { padding: 8px 4px; }
+  .para-tab .pt-icon { font-size: 18px; }
+  .para-tab .pt-name { font-size: 10px; }
+  .para-tab .pt-count { display: none; }
+
+  /* Planner */
+  .planner-grid { grid-template-columns: 1fr !important; }
+
+  /* Week chart labels */
+  .plan-day-name { font-size: 10px; }
+
+  /* Char level */
+  .char-level { font-size: 24px; }
+  .char-xp-row { font-size: 10px; }
+
+  /* Topbar badges */
+  #topXP, #topLevel { font-size: 10px; padding: 2px 7px; }
+
+  /* Modals */
+  .modal-box { padding: 20px; }
+  .overlay-card { padding: 30px 20px; }
+  .overlay-title { font-size: 24px; }
+
+  /* Scrollbar hidden on mobile */
+  .sidebar::-webkit-scrollbar { display: none; }
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .areas-grid { grid-template-columns: 1fr !important; }
+  .achievements-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .habit-row { flex-wrap: wrap; gap: 6px; }
+  .habit-days-row { order: 3; width: 100%; justify-content: flex-start; }
+}
+
+/* ═══════════════════════════════════════════════
+   iOS / SAFARI FIXES
+═══════════════════════════════════════════════ */
+
+/* Smooth momentum scrolling everywhere */
+.main, .sidebar, .quest-list, .task-list, .habits-grid, .para-items {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Remove 300ms tap delay on all interactive elements */
+a, button, .btn, .btn-ghost, .btn-gold, .btn-primary,
+.nav-item, .quest-item, .habit-row, .hday, .ach-item,
+.area-card, .para-item, .plan-day, .tab, .para-tab,
+.theme-toggle, .icon-btn, .sidebar-collapse-btn,
+.card, [onclick] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fix inputs on iOS (prevents zoom on focus) */
+input, select, textarea {
+  font-size: 16px !important; /* 16px prevents iOS auto-zoom */
+  -webkit-appearance: none;
+  border-radius: 8px;
+}
+
+/* Fix fixed positioning on iOS with safe area */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .sidebar {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  .main {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+  .toast {
+    bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Fix 100vh on iOS Safari (address bar issue) */
+.app {
+  min-height: -webkit-fill-available;
+}
+
+/* Fix for iOS select arrow */
+select.input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a6080' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+/* Prevent text size adjustment on rotation */
+body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Smooth font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* iPad touch targets */
+@media (pointer: coarse) {
+  .nav-item { min-height: 48px; }
+  .btn, .btn-primary, .btn-ghost { min-height: 44px; }
+  .hday { width: 30px; height: 30px; }
+}
+
+/* ═══════════════════════════════════════════
+   SOLO LEVELING ADDITIONS
+═══════════════════════════════════════════ */
+
+/* Rank badge */
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px; height: 48px;
+  border-radius: 10px;
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 900;
+  border: 2px solid currentColor;
+  position: relative;
+  flex-shrink: 0;
+}
+.rank-badge::after {
+  content: '';
+  position: absolute; inset: -4px;
+  border-radius: 12px;
+  border: 1px solid currentColor;
+  opacity: 0.3;
+  animation: pulse-ring 2.5s ease infinite;
+}
+
+/* Stats panel */
+.stats-panel {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+@media (max-width: 1024px) {
+  .stats-panel { grid-template-columns: repeat(5, 1fr); gap: 5px; }
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+}
+.stat-card:hover { transform: translateY(-2px); }
+.stat-card::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--stat-color, var(--accent));
+}
+.stat-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+.stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--stat-color, var(--accent));
+}
+.stat-name {
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+.stat-add-btn {
+  display: inline-flex; align-items:center; justify-content:center;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--stat-color, var(--accent));
+  color: #000;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+  margin-top: 4px;
+  transition: var(--transition);
+  opacity: 0.8;
+}
+.stat-add-btn:hover { opacity: 1; transform: scale(1.2); }
+
+/* Daily Quest card */
+.daily-quest-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  transition: var(--transition);
+  animation: slideIn 0.3s ease;
+}
+.daily-quest-item.done {
+  opacity: 0.5;
+  border-left-color: var(--accent3);
+}
+.daily-quest-item.expired {
+  border-left-color: var(--accent2);
+  background: rgba(255,112,67,0.05);
+}
+
+.daily-timer {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--accent2);
+  margin-left: auto;
+  white-space: nowrap;
+}
+.daily-timer.urgent { color: #ff1744; animation: blink 1s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Penalty zone */
+.penalty-banner {
+  background: linear-gradient(135deg, rgba(239,83,80,0.15), rgba(255,23,68,0.1));
+  border: 1px solid rgba(239,83,80,0.5);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  animation: penaltyPulse 2s ease infinite;
+}
+@keyframes penaltyPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(239,83,80,0); }
+  50%      { box-shadow: 0 0 20px 4px rgba(239,83,80,0.3); }
+}
+.penalty-icon { font-size: 32px; flex-shrink:0; }
+.penalty-title { font-family:'Cinzel',serif; font-size:14px; font-weight:700; color:#ef5350; margin-bottom:3px; }
+.penalty-text  { font-size:12px; color:var(--text-sec); }
+.penalty-timer { font-family:'Share Tech Mono',monospace; font-size:20px; color:#ff1744; margin-left:auto; }
+
+/* Dungeon card */
+.dungeon-banner {
+  background: linear-gradient(135deg, rgba(171,71,188,0.15), rgba(224,64,251,0.08));
+  border: 1px solid rgba(171,71,188,0.5);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.dungeon-banner:hover { border-color: rgba(171,71,188,0.8); }
+.dungeon-title { font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:#ab47bc; margin-bottom:4px; }
+
+/* System notification popup */
+.sys-notif {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: var(--bg-panel);
+  border: 2px solid var(--accent);
+  border-radius: 16px;
+  padding: 32px 40px;
+  text-align: center;
+  z-index: 1001;
+  min-width: 300px;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 60px rgba(0,200,255,0.3), 0 20px 60px rgba(0,0,0,0.6);
+}
+.sys-notif.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.sys-notif-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.sys-notif-overlay.visible { opacity: 1; }
+
+.sys-notif-rank {
+  font-family: 'Cinzel', serif;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.sys-notif-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--text-sec);
+  margin-bottom: 20px;
+}
+
+/* Free stat points indicator */
+.stat-points-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,193,7,0.1);
+  border: 1px solid rgba(255,193,7,0.3);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.stat-points-num {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gold);
+}
+
+/* PWA offline indicator */
+.offline-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: #ff1744;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  font-size: 12px;
+  font-family: 'Share Tech Mono', monospace;
+  z-index: 9999;
+  transform: translateY(-100%);
+  transition: transform 0.3s;
+}
+.offline-bar.show { transform: translateY(0); }
+</style>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Life%20RPG%20%E2%80%94%20Solo%20System%22%2C%22short_name%22%3A%22Life%20RPG%22%2C%22description%22%3A%22%D0%A2%D0%B2%D0%BE%D1%8F%20%D0%B6%D0%B8%D0%B7%D0%BD%D1%8C%20%D0%BA%D0%B0%D0%BA%20RPG.%20Solo%20Leveling%20System.%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22background_color%22%3A%22%23080d18%22%2C%22theme_color%22%3A%22%23080d18%22%2C%22lang%22%3A%22ru%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'100'%20fill%3D'%2523080d18'%2F%253E%253Ctext%20x%3D'256'%20y%3D'340'%20font-size%3D'280'%20text-anchor%3D'middle'%253E%25E2%259A%2594%25EF%25B8%258F%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%253E%253Crect%20width%3D'512'%20height%3D'512'%20rx%3D'100'%20fill%3D'%2523080d18'%2F%253E%253Ctext%20x%3D'256'%20y%3D'340'%20font-size%3D'280'%20text-anchor%3D'middle'%253E%25E2%259A%2594%25EF%25B8%258F%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%2C%22categories%22%3A%5B%22productivity%22%2C%22lifestyle%22%5D%2C%22shortcuts%22%3A%5B%7B%22name%22%3A%22%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81%22%2C%22short_name%22%3A%22%D0%A1%D1%82%D0%B0%D1%82%D1%83%D1%81%22%2C%22description%22%3A%22%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0%20%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B0%22%2C%22url%22%3A%22.%2F%23dashboard%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2096%2096'%253E%253Ctext%20y%3D'.9em'%20font-size%3D'96'%253E%F0%9F%97%BA%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%2296x96%22%7D%5D%7D%2C%7B%22name%22%3A%22%D0%9A%D0%B2%D0%B5%D1%81%D1%82%D1%8B%22%2C%22short_name%22%3A%22%D0%9A%D0%B2%D0%B5%D1%81%D1%82%D1%8B%22%2C%22description%22%3A%22%D0%9C%D0%BE%D0%B8%20%D0%BA%D0%B2%D0%B5%D1%81%D1%82%D1%8B%22%2C%22url%22%3A%22.%2F%23quests%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2096%2096'%253E%253Ctext%20y%3D'.9em'%20font-size%3D'96'%253E%E2%9A%94%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%2296x96%22%7D%5D%7D%5D%7D">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23080d18'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" sizes="152x152" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23080d18'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23080d18'/%3E%3Ctext x='256' y='340' font-size='280' text-anchor='middle'%3E%E2%9A%94%EF%B8%8F%3C/text%3E%3C%2Fsvg%3E">
+<meta name="msapplication-TileColor" content="#080d18">
+</head>
+<body>
+
+<div class="offline-bar" id="offlineBar">⚠ ОФЛАЙН РЕЖИМ — данные сохранены локально</div>
+<div class="app">
+  <!-- ═════ SIDEBAR ═════ -->
+  <aside class="sidebar">
+    <!-- Desktop: logo + collapse btn -->
+    <div class="sidebar-logo desktop-only">
+      <span class="logo-icon">⚔</span>
+      <span class="logo-text">LIFE RPG</span>
+      <button class="sidebar-collapse-btn" onclick="toggleSidebar()" title="Свернуть">◀</button>
+    </div>
+
+    <!-- Desktop: section labels -->
+    <div class="nav-section desktop-only">Главное</div>
+
+    <!-- ALL nav items (shown on both desktop & mobile) -->
+    <div class="nav-item active" onclick="navigate('dashboard')" data-tip="Статус">
+      <span class="nav-icon">🗺</span><span class="nav-label"> Статус</span>
+    </div>
+    <div class="nav-item" onclick="navigate('quests')" data-tip="Квесты">
+      <span class="nav-icon">⚔</span><span class="nav-label"> Квесты</span>
+      <span class="nav-badge" id="nav-quest-badge">0</span>
+    </div>
+    <div class="nav-item" onclick="navigate('areas')" data-tip="Области">
+      <span class="nav-icon">🌍</span><span class="nav-label"> Области</span>
+    </div>
+    <div class="nav-item" onclick="navigate('habits')" data-tip="Привычки">
+      <span class="nav-icon">📅</span><span class="nav-label"> Привычки</span>
+    </div>
+
+    <div class="nav-section desktop-only">Система</div>
+
+    <div class="nav-item" onclick="navigate('para')" data-tip="PARA">
+      <span class="nav-icon">🗂</span><span class="nav-label"> PARA</span>
+    </div>
+    <div class="nav-item" onclick="navigate('planner')" data-tip="Планировщик">
+      <span class="nav-icon">📆</span><span class="nav-label"> Плanner</span>
+    </div>
+    <div class="nav-item" onclick="navigate('achievements')" data-tip="Достижения">
+      <span class="nav-icon">🏆</span><span class="nav-label"> Награды</span>
+      <span class="nav-badge" id="nav-ach-badge">0</span>
+    </div>
+    <div class="nav-item" onclick="navigate('settings')" data-tip="Настройки">
+      <span class="nav-icon">⚙</span><span class="nav-label"> Настройки</span>
+    </div>
+
+    <!-- Desktop only: settings in bottom slot -->
+    <div class="sidebar-bottom desktop-only"></div>
+  </aside>
+
+  <!-- ═════ MAIN ═════ -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="page-title" id="pageTitle">⚔ Статус персонажа</div>
+      <div class="topbar-right">
+        <div class="badge badge-gold" id="topXP">XP: 0</div>
+        <div class="badge badge-blue" id="topLevel">LVL 1</div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <span id="themeIcon">☀️</span> <span id="themeLabel">Светлая</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═════ DASHBOARD ═════ -->
+      <div class="page active" id="page-dashboard">
+        <div class="grid-2 mb fade-in">
+          <!-- CHARACTER CARD — Solo Leveling Style -->
+          <div class="card" style="grid-column:1/-1">
+            <div class="card-title"><span class="ct-icon">🧙</span> СТАТУС ОХОТНИКА</div>
+            <div class="char-panel">
+              <div class="char-avatar-wrap">
+                <div class="char-avatar" id="charAvatar">🧙‍♂️</div>
+                <div class="char-class" id="charClass">// НОВОБРАНЕЦ</div>
+                <div class="char-name" id="charName">ГЕРОЙ</div>
+                <div id="rankBadgeWrap" style="margin-top:10px;display:flex;justify-content:center"></div>
+              </div>
+              <div class="char-info" style="flex:1">
+                <!-- Level + Rank row -->
+                <div style="display:flex;align-items:center;gap:14px;margin-bottom:10px">
+                  <div class="char-level" id="charLevel">1</div>
+                  <div>
+                    <div class="char-title" id="charTitleBig">Слабейший</div>
+                    <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-muted)" id="rankLabel">РАНГ E</div>
+                  </div>
+                  <div style="margin-left:auto;text-align:right">
+                    <div style="font-size:11px;color:var(--text-muted);font-family:'Share Tech Mono',monospace" id="xpNext">200 XP до ↑</div>
+                    <div style="font-size:11px;color:var(--text-muted);font-family:'Share Tech Mono',monospace" id="xpCurrent">0 XP</div>
+                  </div>
+                </div>
+                <div class="xp-bar-outer" style="margin-bottom:14px">
+                  <div class="xp-bar-fill" id="xpBarFill"></div>
+                </div>
+
+                <!-- STATS (STR/AGI/INT/VIT/SEN) -->
+                <div id="statPointsBanner" style="display:none" class="stat-points-banner">
+                  <span>⚡</span>
+                  <span>Свободные очки характеристик:</span>
+                  <span class="stat-points-num" id="freeStatPoints">0</span>
+                </div>
+                <div class="stats-panel" id="statsPanel"></div>
+
+                <!-- Quick stats row -->
+                <div class="stats-row" style="margin-top:12px">
+                  <div class="stat-box">
+                    <div class="stat-val" style="color:var(--accent)" id="statTotalXP">0</div>
+                    <div class="stat-lbl">ВСЕГО XP</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-val" style="color:var(--accent3)" id="statDone">0</div>
+                    <div class="stat-lbl">КВЕСТОВ</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-val" style="color:var(--gold)" id="statStreak">0</div>
+                    <div class="stat-lbl">🔥 СЕРИЯ</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-val" style="color:var(--purple)" id="statAch">0</div>
+                    <div class="stat-lbl">НАГРАД</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PENALTY BANNER (shown when active) -->
+        <div id="penaltyBanner" style="display:none" class="penalty-banner">
+          <div class="penalty-icon">☠️</div>
+          <div>
+            <div class="penalty-title">⚠ ЗОНА ШТРАФА АКТИВНА</div>
+            <div class="penalty-text">Ты не выполнил ежедневные задания. Выполни штрафные квесты!</div>
+          </div>
+          <div class="penalty-timer" id="penaltyTimer">--:--:--</div>
+        </div>
+
+        <!-- DAILY QUESTS FROM SYSTEM -->
+        <div class="card fade-in mb">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)">
+            <div class="card-title" style="margin:0"><span class="ct-icon">⚡</span> ЕЖЕДНЕВНЫЕ ЗАДАНИЯ СИСТЕМЫ</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="badge badge-blue" id="dailyProgress">0/0</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-muted)">сброс в</span>
+              <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--accent)" id="dailyReset">00:00:00</span>
+            </div>
+          </div>
+          <div id="dailyQuestList"></div>
+        </div>
+
+        <!-- ACTIVE QUESTS QUICK VIEW -->
+        <div class="grid-2 mb">
+          <div class="card fade-in">
+            <div class="card-title"><span class="ct-icon">⚔</span> МОИ КВЕСТЫ</div>
+            <div id="dashQuestList">
+              <div class="empty-state"><span class="empty-icon">🗡</span><div class="empty-text">Нет активных квестов<br>Добавь первый!</div></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:12px;width:100%" onclick="navigate('quests')">Все квесты →</button>
+          </div>
+
+          <div class="card fade-in">
+            <div class="card-title"><span class="ct-icon">📊</span> ПРОГРЕСС НЕДЕЛИ</div>
+            <div id="weekChart" style="display:flex;align-items:flex-end;gap:6px;height:90px;margin-bottom:8px;"></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="weekSummary"></div>
+          </div>
+        </div>
+
+        <!-- AREAS QUICK - Radar Chart -->
+        <div class="card fade-in mb">
+          <div class="card-title"><span class="ct-icon">🌍</span> ОБЛАСТИ ЖИЗНИ</div>
+          <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+            <div style="flex:0 0 auto;display:flex;align-items:center;justify-content:center;">
+              <canvas id="radarChart" width="300" height="300" style="max-width:300px;max-height:300px;"></canvas>
+            </div>
+            <div style="flex:1;min-width:180px;" id="dashAreasLegend"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════ QUESTS ═════ -->
+      <div class="page" id="page-quests">
+        <div class="card fade-in">
+          <div class="card-title"><span class="ct-icon">⚔</span> ДОБАВИТЬ КВЕСТ</div>
+          <div class="quest-form">
+            <div class="form-group">
+              <div class="form-label">НАЗВАНИЕ КВЕСТА</div>
+              <input class="input" id="qName" placeholder="Что нужно сделать?">
+            </div>
+            <div class="form-group">
+              <div class="form-label">ОБЛАСТЬ ЖИЗНИ</div>
+              <select class="input" id="qArea">
+                <option value="work">💼 Работа</option>
+                <option value="fitness">🏋 Фитнес</option>
+                <option value="learning">📚 Обучение</option>
+                <option value="health">❤️ Здоровье</option>
+                <option value="finance">💰 Финансы</option>
+                <option value="creativity">🎨 Творчество</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">СЛОЖНОСТЬ / XP</div>
+              <select class="input" id="qXP">
+                <option value="10">Простой · +10 XP</option>
+                <option value="25" selected>Средний · +25 XP</option>
+                <option value="50">Сложный · +50 XP</option>
+                <option value="100">Эпический · +100 XP</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">&nbsp;</div>
+              <button class="btn btn-primary" onclick="addQuest()">+ ДОБАВИТЬ</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <div class="tabs">
+            <div class="tab active" onclick="filterQuests('active',this)">⚔ Активные</div>
+            <div class="tab" onclick="filterQuests('done',this)">✅ Завершённые</div>
+            <div class="tab" onclick="filterQuests('all',this)">📋 Все</div>
+          </div>
+          <div class="quest-list fade-in" id="questList"></div>
+        </div>
+      </div>
+
+      <!-- ═════ AREAS ═════ -->
+      <div class="page" id="page-areas">
+        <div class="areas-grid" id="areasGrid"></div>
+      </div>
+
+      <!-- ═════ HABITS ═════ -->
+      <div class="page" id="page-habits">
+        <div class="grid-2">
+          <div class="card fade-in">
+            <div class="card-title"><span class="ct-icon">📅</span> МОИ ПРИВЫЧКИ</div>
+            <div id="habitList"></div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:14px;width:100%" onclick="showAddHabit()">+ Добавить привычку</button>
+          </div>
+          <div class="card fade-in">
+            <div class="card-title"><span class="ct-icon">📊</span> СТАТИСТИКА ПРИВЫЧЕК</div>
+            <div id="habitStats"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═════ PARA ═════ -->
+      <div class="page" id="page-para">
+        <div class="card fade-in mb">
+          <div class="card-title"><span class="ct-icon">🗂</span> PARA МЕТОД</div>
+          <div style="font-size:13px;color:var(--text-sec);margin-bottom:16px">Система организации от Тиаго Форте: <strong style="color:var(--text-pri)">P</strong>rojects · <strong style="color:var(--text-pri)">A</strong>reas · <strong style="color:var(--text-pri)">R</strong>esources · <strong style="color:var(--text-pri)">A</strong>rchive</div>
+          <div class="para-tabs" id="paraTabs"></div>
+        </div>
+        <div class="card fade-in">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+            <div class="card-title" style="margin:0"><span class="ct-icon" id="paraTabIcon">📁</span> <span id="paraTabName">ПРОЕКТЫ</span></div>
+            <button class="btn btn-primary btn-sm" onclick="showAddPara()">+ Добавить</button>
+          </div>
+          <div id="paraItemsList"></div>
+        </div>
+      </div>
+
+      <!-- ═════ PLANNER ═════ -->
+      <div class="page" id="page-planner">
+        <div class="planner-grid">
+          <div class="card fade-in">
+            <div class="plan-section-title">📅 ПЛАН НА НЕДЕЛЮ</div>
+            <div id="weekPlan"></div>
+          </div>
+          <div class="card fade-in">
+            <div class="plan-section-title">🗓 ПРЕДСТОЯЩИЕ КВЕСТЫ</div>
+            <div id="upcomingQuests"></div>
+          </div>
+        </div>
+        <div class="card fade-in" style="margin-top:16px">
+          <div class="plan-section-title">📈 ЕЖЕМЕСЯЧНЫЙ ОБЗОР</div>
+          <div id="monthOverview" style="display:flex;gap:12px;flex-wrap:wrap;"></div>
+        </div>
+      </div>
+
+      <!-- ═════ ACHIEVEMENTS ═════ -->
+      <div class="page" id="page-achievements">
+        <div class="card fade-in mb">
+          <div class="card-title"><span class="ct-icon">🏆</span> ДОСТИЖЕНИЯ</div>
+          <div id="achProgress" style="margin-bottom:16px"></div>
+          <div class="achievements-grid" id="achGrid"></div>
+        </div>
+
+        <div class="card fade-in">
+          <div class="card-title"><span class="ct-icon">📜</span> ТИТУЛЫ</div>
+          <div id="titlesGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;"></div>
+        </div>
+      </div>
+
+      <!-- ═════ SETTINGS ═════ -->
+      <div class="page" id="page-settings">
+        <div class="card fade-in" style="max-width:500px">
+          <div class="card-title"><span class="ct-icon">⚙</span> НАСТРОЙКИ ПЕРСОНАЖА</div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="form-group">
+              <div class="form-label">ИМЯ ПЕРСОНАЖА</div>
+              <input class="input" id="settingName" placeholder="Введи имя">
+            </div>
+            <div class="form-group">
+              <div class="form-label">АВАТАР</div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap" id="avatarPicker"></div>
+            </div>
+            <div class="form-group">
+              <div class="form-label">КЛАСС ПЕРСОНАЖА</div>
+              <select class="input" id="settingClass">
+                <option value="warrior">⚔ Воин</option>
+                <option value="mage">🧙 Маг</option>
+                <option value="rogue">🗡 Разбойник</option>
+                <option value="paladin">🛡 Паладин</option>
+                <option value="ranger">🏹 Лучник</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">💾 СОХРАНИТЬ</button>
+            <button class="btn btn-ghost" onclick="if(confirm('Сбросить все данные?')) resetAll()">🗑 Сбросить всё</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ADD HABIT MODAL -->
+<div class="modal" id="addHabitModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title">📅 Новая привычка</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="form-group">
+        <div class="form-label">НАЗВАНИЕ</div>
+        <input class="input" id="hName" placeholder="Например: Медитация">
+      </div>
+      <div class="form-group">
+        <div class="form-label">ИКОНКА</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="habitIconPicker">
+          🧘 🏃 💧 📚 🥗 🛌 🎯 💪 🧠 ✍️ 🌅 🎸
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">XP ЗА ДЕНЬ</div>
+        <select class="input" id="hXP">
+          <option value="5">+5 XP</option>
+          <option value="10" selected>+10 XP</option>
+          <option value="15">+15 XP</option>
+          <option value="20">+20 XP</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addHabitModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="addHabit()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PARA MODAL -->
+<div class="modal" id="addParaModal" style="display:none">
+  <div class="modal-box">
+    <div class="modal-title" id="addParaTitle">📁 Добавить проект</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="form-group">
+        <div class="form-label">НАЗВАНИЕ</div>
+        <input class="input" id="pName" placeholder="Название...">
+      </div>
+      <div class="form-group">
+        <div class="form-label">ОПИСАНИЕ</div>
+        <input class="input" id="pDesc" placeholder="Краткое описание...">
+      </div>
+      <div class="form-group">
+        <div class="form-label">ИКОНКА</div>
+        <input class="input" id="pIcon" placeholder="Emoji" style="width:60px">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addParaModal')">Отмена</button>
+      <button class="btn btn-primary" onclick="savePara()">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════
+const DAYS = ['ПН','ВТ','СР','ЧТ','ПТ','СБ','ВС'];
+const TODAY = new Date();
+const todayIdx = TODAY.getDay() === 0 ? 6 : TODAY.getDay() - 1;
+
+const RANKS = [
+  { rank:'E',   label:'Ранг E',  color:'#78909c', glow:'rgba(120,144,156,0.4)', title:'Слабейший',       cls:'НОВОБРАНЕЦ',  minLvl:1   },
+  { rank:'D',   label:'Ранг D',  color:'#66bb6a', glow:'rgba(102,187,106,0.4)', title:'Охотник',          cls:'ОХОТНИК',     minLvl:5   },
+  { rank:'C',   label:'Ранг C',  color:'#29b6f6', glow:'rgba(41,182,246,0.4)',  title:'Элитный',          cls:'ЭЛИТНЫЙ',     minLvl:10  },
+  { rank:'B',   label:'Ранг B',  color:'#ab47bc', glow:'rgba(171,71,188,0.4)',  title:'Специальный',      cls:'СПЕЦИАЛЬНЫЙ', minLvl:20  },
+  { rank:'A',   label:'Ранг A',  color:'#ffa726', glow:'rgba(255,167,38,0.4)',  title:'Опасный',          cls:'ОПАСНЫЙ',     minLvl:35  },
+  { rank:'S',   label:'Ранг S',  color:'#ef5350', glow:'rgba(239,83,80,0.5)',   title:'Национальный',     cls:'НАЦУРОВЕНЬ',  minLvl:50  },
+  { rank:'SS',  label:'Ранг SS', color:'#ff1744', glow:'rgba(255,23,68,0.6)',   title:'Монарх',           cls:'МОНАРХ',      minLvl:75  },
+  { rank:'???', label:'???',     color:'#e040fb', glow:'rgba(224,64,251,0.7)',  title:'Властелин Теней',  cls:'ВЛАСТЕЛИН',   minLvl:100 }
+];
+
+const STAT_DEFS = [
+  { id:'STR', name:'Сила',        icon:'💪', color:'#ef5350', area:'fitness'    },
+  { id:'AGI', name:'Ловкость',    icon:'⚡', color:'#ffa726', area:'health'     },
+  { id:'INT', name:'Интеллект',   icon:'🧠', color:'#29b6f6', area:'learning'   },
+  { id:'VIT', name:'Выносливость',icon:'❤️', color:'#66bb6a', area:'health'     },
+  { id:'SEN', name:'Восприятие',  icon:'👁',  color:'#ab47bc', area:'creativity' }
+];
+
+const AREAS = [
+  { id:'work',       name:'Работа',     icon:'💼', color:'#00c8ff', bg:'rgba(0,200,255,0.12)'   },
+  { id:'fitness',    name:'Фитнес',     icon:'🏋', color:'#69f070', bg:'rgba(105,240,112,0.12)' },
+  { id:'learning',   name:'Обучение',   icon:'📚', color:'#b57aff', bg:'rgba(181,122,255,0.12)' },
+  { id:'health',     name:'Здоровье',   icon:'❤️', color:'#ff7043', bg:'rgba(255,112,67,0.12)'  },
+  { id:'finance',    name:'Финансы',    icon:'💰', color:'#ffc107', bg:'rgba(255,193,7,0.12)'   },
+  { id:'creativity', name:'Творчество', icon:'🎨', color:'#ff69b4', bg:'rgba(255,105,180,0.12)' }
+];
+
+const ACHIEVEMENTS_DEF = [
+  { id:'first_quest',  icon:'⚡', name:'Первый шаг',       xp:50,  cond:function(s){ return s.totalDone >= 1; } },
+  { id:'quests_10',    icon:'🎯', name:'Опытный воин',      xp:100, cond:function(s){ return s.totalDone >= 10; } },
+  { id:'quests_50',    icon:'⚔', name:'Ветеран битв',      xp:200, cond:function(s){ return s.totalDone >= 50; } },
+  { id:'level_5',      icon:'⭐', name:'Подъём силы',       xp:150, cond:function(s){ return getLevelNum(s.totalXP) >= 5; } },
+  { id:'level_10',     icon:'🌟', name:'Величие',           xp:500, cond:function(s){ return getLevelNum(s.totalXP) >= 10; } },
+  { id:'habit_week',   icon:'🔥', name:'Огонь привычки',    xp:100, cond:function(s){ return s.habits.some(function(h){ return h.streak >= 7; }); } },
+  { id:'habit_month',  icon:'💎', name:'Хрустальная серия', xp:300, cond:function(s){ return s.habits.some(function(h){ return h.streak >= 21; }); } },
+  { id:'rank_d',       icon:'🗡', name:'Ранг D достигнут',  xp:100, cond:function(s){ return getLevelNum(s.totalXP) >= 5; } },
+  { id:'rank_s',       icon:'🏆', name:'Ранг S достигнут',  xp:1000,cond:function(s){ return getLevelNum(s.totalXP) >= 50; } },
+  { id:'xp_500',       icon:'💫', name:'500 XP',            xp:0,   cond:function(s){ return s.totalXP >= 500; } },
+  { id:'xp_2000',      icon:'✨', name:'2000 XP',           xp:0,   cond:function(s){ return s.totalXP >= 2000; } },
+  { id:'xp_5000',      icon:'🏅', name:'5000 XP',           xp:0,   cond:function(s){ return s.totalXP >= 5000; } }
+];
+
+const PARA_CONFIG = [
+  { key:'P',  icon:'📁', name:'Проекты', color:'#00c8ff', desc:'Активные проекты с дедлайном' },
+  { key:'A',  icon:'🌿', name:'Области', color:'#69f070', desc:'Долгосрочные сферы жизни'      },
+  { key:'R',  icon:'📚', name:'Ресурсы', color:'#b57aff', desc:'Материалы и знания'             },
+  { key:'Ar', icon:'📦', name:'Архив',   color:'#ffc107', desc:'Завершённые и неактивные'       }
+];
+
+const AVATARS = ['🧙','⚔️','🛡️','🏹','🧝','🦸','🦹','👾','🤖','🐉','🦊','🐺'];
+const DAILY_POOL = [
+  { name:'Отжимания 50 раз',        icon:'💪', xp:30, stat:'STR', area:'fitness'    },
+  { name:'Пробежка 2 км',            icon:'🏃', xp:40, stat:'VIT', area:'fitness'    },
+  { name:'Читать 20 минут',          icon:'📖', xp:25, stat:'INT', area:'learning'   },
+  { name:'Выпить 2 литра воды',      icon:'💧', xp:20, stat:'VIT', area:'health'     },
+  { name:'Медитация 10 минут',       icon:'🧘', xp:25, stat:'SEN', area:'health'     },
+  { name:'Написать 3 цели на день',  icon:'✍️', xp:20, stat:'INT', area:'learning'   },
+  { name:'Растяжка 15 минут',        icon:'🤸', xp:25, stat:'AGI', area:'fitness'    },
+  { name:'Выучить 10 новых слов',    icon:'📝', xp:30, stat:'INT', area:'learning'   },
+  { name:'100 приседаний',           icon:'🦵', xp:35, stat:'STR', area:'fitness'    },
+  { name:'Пройти 8000 шагов',        icon:'👣', xp:35, stat:'AGI', area:'fitness'    },
+  { name:'Лечь спать до 23:00',      icon:'🛌', xp:20, stat:'VIT', area:'health'     },
+  { name:'Без телефона 1 час',       icon:'📵', xp:30, stat:'SEN', area:'creativity' },
+  { name:'Записать идею в дневник',  icon:'💡', xp:20, stat:'INT', area:'creativity' },
+  { name:'Холодный душ',             icon:'🚿', xp:30, stat:'VIT', area:'health'     },
+  { name:'Планка 1 минута',          icon:'🏋', xp:25, stat:'STR', area:'fitness'    }
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+function defaultState() {
+  return {
+    name: 'ГЕРОЙ',
+    avatar: '🧙',
+    charClass: 'mage',
+    totalXP: 0,
+    totalDone: 0,
+    streak: 0,
+    weeklyXP: [0,0,0,0,0,0,0],
+    areaXP: {},
+    quests: [],
+    habits: [
+      { id:1, name:'Спорт',     icon:'🏃', xp:10, days:[0,0,0,0,0,0,0], streak:0 },
+      { id:2, name:'Чтение',    icon:'📚', xp:10, days:[0,0,0,0,0,0,0], streak:0 },
+      { id:3, name:'Медитация', icon:'🧘', xp:10, days:[0,0,0,0,0,0,0], streak:0 }
+    ],
+    para: { P:[], A:[], R:[], Ar:[] },
+    achievements: {},
+    theme: 'dark',
+    nextId: 100,
+    stats: { STR:10, AGI:10, INT:10, VIT:10, SEN:10 },
+    statPoints: 0,
+    dailyQuests: [],
+    dailyQuestDate: null,
+    penaltyActive: false,
+    penaltyEndTime: null,
+    sidebarCollapsed: false
+  };
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem('liferpg_v3');
+    if (!raw) return defaultState();
+    var parsed = JSON.parse(raw);
+    var def = defaultState();
+    var result = {};
+    for (var k in def) result[k] = def[k];
+    for (var k in parsed) result[k] = parsed[k];
+    return result;
+  } catch(e) { return defaultState(); }
+}
+
+function save() {
+  try { localStorage.setItem('liferpg_v3', JSON.stringify(S)); } catch(e) {}
+}
+
+var S = loadState();
+
+// ═══════════════════════════════════════════════
+// LEVEL / RANK SYSTEM
+// ═══════════════════════════════════════════════
+function levelXPRequired(lvl) {
+  return Math.floor(200 * Math.pow(1.3, lvl - 1));
+}
+
+function getLevelNum(totalXP) {
+  var lvl = 1, xp = totalXP;
+  while (true) {
+    var needed = levelXPRequired(lvl);
+    if (xp < needed) break;
+    xp -= needed;
+    lvl++;
+    if (lvl > 999) break;
+  }
+  return lvl;
+}
+
+function getCurrentXP(totalXP) {
+  var lvl = 1, xp = totalXP;
+  while (true) {
+    var needed = levelXPRequired(lvl);
+    if (xp < needed) return { current: xp, needed: needed, lvl: lvl };
+    xp -= needed;
+    lvl++;
+    if (lvl > 999) break;
+  }
+  return { current: 0, needed: 1, lvl: 999 };
+}
+
+function getRank(lvl) {
+  var r = RANKS[0];
+  for (var i = 0; i < RANKS.length; i++) {
+    if (lvl >= RANKS[i].minLvl) r = RANKS[i];
+  }
+  return r;
+}
+
+// ═══════════════════════════════════════════════
+// XP & LEVELING
+// ═══════════════════════════════════════════════
+function awardXP(amount, areaId) {
+  var oldLvl = getLevelNum(S.totalXP);
+  S.totalXP += amount;
+  S.weeklyXP[todayIdx] = (S.weeklyXP[todayIdx] || 0) + amount;
+  if (areaId) {
+    S.areaXP[areaId] = (S.areaXP[areaId] || 0) + amount;
+    // 30% chance: boost linked stat
+    for (var i = 0; i < STAT_DEFS.length; i++) {
+      if (STAT_DEFS[i].area === areaId && Math.random() < 0.3) {
+        S.stats[STAT_DEFS[i].id] = (S.stats[STAT_DEFS[i].id] || 10) + 1;
+        break;
+      }
+    }
+  }
+  var newLvl = getLevelNum(S.totalXP);
+  if (newLvl > oldLvl) {
+    S.statPoints = (S.statPoints || 0) + 3;
+    save(); checkAchievements(); updateAllUI();
+    showRankUp(newLvl, oldLvl);
+  } else {
+    save(); checkAchievements(); updateAllUI();
+  }
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+var PAGE_TITLES = {
+  dashboard: '🗺 Статус персонажа',
+  quests: '⚔ Квесты',
+  areas: '🌍 Области жизни',
+  habits: '📅 Привычки',
+  para: '🗂 PARA Система',
+  planner: '📆 Планировщик',
+  achievements: '🏆 Достижения',
+  settings: '⚙ Настройки'
+};
+
+function navigate(page) {
+  var pageEl = document.getElementById('page-' + page);
+  if (!pageEl) return;
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  pageEl.classList.add('active');
+  var navItems = document.querySelectorAll('.nav-item');
+  for (var i = 0; i < navItems.length; i++) {
+    navItems[i].classList.remove('active');
+    var oc = navItems[i].getAttribute('onclick') || '';
+    if (oc.indexOf("'" + page + "'") !== -1) navItems[i].classList.add('active');
+  }
+  var titleEl = document.getElementById('pageTitle');
+  if (titleEl) titleEl.textContent = PAGE_TITLES[page] || page;
+  setTimeout(function() { renderPage(page); }, 0);
+}
+
+function renderPage(page) {
+  if (page === 'dashboard')    renderDashboard();
+  else if (page === 'quests')       renderQuests();
+  else if (page === 'areas')        renderAreas();
+  else if (page === 'habits')       renderHabits();
+  else if (page === 'para')         renderPara();
+  else if (page === 'planner')      renderPlanner();
+  else if (page === 'achievements') renderAchievements();
+  else if (page === 'settings')     renderSettings();
+}
+
+// ═══════════════════════════════════════════════
+// UPDATE ALL UI
+// ═══════════════════════════════════════════════
+function updateAllUI() {
+  if (!S.stats) S.stats = { STR:10, AGI:10, INT:10, VIT:10, SEN:10 };
+  var lvlData = getCurrentXP(S.totalXP);
+  var lvlNum = lvlData.lvl;
+  var rank = getRank(lvlNum);
+
+  var el;
+  el = document.getElementById('topXP');     if (el) el.textContent = 'XP: ' + S.totalXP;
+  el = document.getElementById('topLevel');  if (el) el.textContent = rank.rank + ' LVL ' + lvlNum;
+  el = document.getElementById('charAvatar');if (el) el.textContent = S.avatar;
+  el = document.getElementById('charName');  if (el) el.textContent = S.name;
+  el = document.getElementById('charClass'); if (el) el.textContent = '// ' + rank.cls;
+  el = document.getElementById('charLevel'); if (el) el.textContent = lvlNum;
+  el = document.getElementById('charTitleBig'); if (el) el.textContent = rank.title;
+  el = document.getElementById('xpCurrent'); if (el) el.textContent = lvlData.current + ' XP';
+  el = document.getElementById('xpNext');    if (el) el.textContent = lvlData.needed + ' XP до ↑';
+  el = document.getElementById('xpBarFill'); if (el) el.style.width = Math.round(lvlData.current / lvlData.needed * 100) + '%';
+  el = document.getElementById('statTotalXP'); if (el) el.textContent = S.totalXP;
+  el = document.getElementById('statDone');    if (el) el.textContent = S.totalDone;
+  el = document.getElementById('statStreak');  if (el) el.textContent = S.streak;
+  el = document.getElementById('statAch');     if (el) el.textContent = Object.keys(S.achievements).length;
+
+  var activeQ = S.quests.filter(function(q) { return !q.done; }).length;
+  el = document.getElementById('nav-quest-badge'); if (el) el.textContent = activeQ;
+  el = document.getElementById('nav-ach-badge');   if (el) el.textContent = Object.keys(S.achievements).length;
+
+  // Rank badge
+  var rbw = document.getElementById('rankBadgeWrap');
+  if (rbw) rbw.innerHTML = '<div class="rank-badge" style="color:' + rank.color + ';border-color:' + rank.color + ';box-shadow:0 0 16px ' + rank.glow + '">' + rank.rank + '</div>';
+  el = document.getElementById('rankLabel'); if (el) el.textContent = rank.label.toUpperCase();
+
+  renderStatsPanel();
+}
+
+// ═══════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════
+function renderDashboard() {
+  updateAllUI();
+  renderDailyQuests();
+  renderDashQuests();
+  renderWeekChart();
+  renderDashAreas();
+}
+
+function renderDashQuests() {
+  var el = document.getElementById('dashQuestList');
+  if (!el) return;
+  var active = S.quests.filter(function(q) { return !q.done; }).slice(0, 4);
+  if (!active.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">🗡</span><div class="empty-text">Нет активных квестов<br>Добавь первый!</div></div>';
+    return;
+  }
+  el.innerHTML = active.map(function(q) {
+    var area = AREAS.filter(function(a) { return a.id === q.area; })[0] || AREAS[0];
+    return '<div class="quest-item" onclick="navigate(\'quests\')">' +
+      '<div class="quest-check"></div>' +
+      '<div class="quest-content"><div class="quest-name">' + q.name + '</div>' +
+      '<div class="quest-meta"><span class="badge badge-blue">' + area.icon + ' ' + area.name + '</span>' +
+      '<span class="badge badge-gold">+' + q.xp + ' XP</span></div></div></div>';
+  }).join('');
+}
+
+function renderWeekChart() {
+  var el = document.getElementById('weekChart');
+  if (!el) return;
+  var vals = S.weeklyXP;
+  var max = Math.max.apply(null, vals.concat([10]));
+  var colors = ['#00c8ff','#b57aff','#69f070','#ffc107','#ff7043','#00c8ff','#b57aff'];
+  el.innerHTML = DAYS.map(function(d, i) {
+    var h = Math.round(vals[i] / max * 100);
+    var isToday = i === todayIdx;
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%">' +
+      '<div style="flex:1;width:100%;display:flex;align-items:flex-end">' +
+      '<div style="width:100%;border-radius:4px 4px 0 0;min-height:3px;height:' + h + '%;background:' + colors[i] + ';opacity:' + (isToday ? 1 : 0.45) + ';transition:height 1s"></div>' +
+      '</div><div style="font-family:Share Tech Mono,monospace;font-size:10px;color:' + (isToday ? 'var(--accent)' : 'var(--text-muted)') + '">' + d + '</div></div>';
+  }).join('');
+  var total = vals.reduce(function(a,b) { return a+b; }, 0);
+  var sumEl = document.getElementById('weekSummary');
+  if (sumEl) sumEl.innerHTML = '<span class="badge badge-blue">Итого: ' + total + ' XP</span><span class="badge badge-gold">Лучший: ' + Math.max.apply(null,vals) + ' XP</span><span class="badge badge-green">Квестов: ' + S.quests.filter(function(q){return q.done;}).length + '</span>';
+}
+
+function renderDashAreas() {
+  drawRadarChart();
+  var legend = document.getElementById('dashAreasLegend');
+  if (!legend) return;
+  legend.innerHTML = AREAS.map(function(a) {
+    var xp = S.areaXP[a.id] || 0;
+    var lvl = Math.max(1, Math.floor(xp / 200) + 1);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="navigate(\'areas\')">' +
+      '<div style="width:10px;height:10px;border-radius:50%;background:' + a.color + ';flex-shrink:0"></div>' +
+      '<div style="font-size:13px;font-weight:600;flex:1">' + a.icon + ' ' + a.name + '</div>' +
+      '<div style="font-size:11px;color:' + a.color + '">' + xp + ' XP</div>' +
+      '<div style="font-size:10px;color:var(--text-muted)">LVL ' + lvl + '</div></div>';
+  }).join('');
+}
+
+function drawRadarChart() {
+  var canvas = document.getElementById('radarChart');
+  if (!canvas) return;
+  var dpr = window.devicePixelRatio || 1;
+  var size = Math.min(canvas.parentElement ? canvas.parentElement.clientWidth || 300 : 300, 300);
+  canvas.style.width = size + 'px';
+  canvas.style.height = size + 'px';
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  var ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  var W = size, H = size, cx = W/2, cy = H/2;
+  var maxR = Math.min(W, H) * 0.36;
+  var N = AREAS.length;
+  var MAX_XP = 1000;
+  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  ctx.clearRect(0, 0, W, H);
+  var angles = AREAS.map(function(_, i) { return (Math.PI * 2 * i / N) - Math.PI / 2; });
+  // Grid rings
+  for (var l = 1; l <= 5; l++) {
+    var r = maxR * (l / 5);
+    ctx.beginPath();
+    for (var i = 0; i < N; i++) {
+      var x = cx + r * Math.cos(angles[i]);
+      var y = cy + r * Math.sin(angles[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = isDark ? 'rgba(0,200,255,0.1)' : 'rgba(0,100,180,0.1)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  // Axes
+  for (var i = 0; i < N; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + maxR * Math.cos(angles[i]), cy + maxR * Math.sin(angles[i]));
+    ctx.strokeStyle = isDark ? 'rgba(0,200,255,0.12)' : 'rgba(0,100,180,0.12)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  // Data polygon
+  var vals = AREAS.map(function(a) { return Math.min((S.areaXP[a.id] || 0) / MAX_XP, 1); });
+  ctx.beginPath();
+  for (var i = 0; i < N; i++) {
+    var r = maxR * vals[i];
+    var x = cx + r * Math.cos(angles[i]);
+    var y = cy + r * Math.sin(angles[i]);
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  var grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR);
+  grad.addColorStop(0, isDark ? 'rgba(0,200,255,0.35)' : 'rgba(0,128,204,0.25)');
+  grad.addColorStop(1, isDark ? 'rgba(181,122,255,0.15)' : 'rgba(112,64,204,0.1)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.strokeStyle = isDark ? 'rgba(0,200,255,0.8)' : 'rgba(0,128,204,0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // Dots + labels
+  for (var i = 0; i < N; i++) {
+    var r = maxR * vals[i];
+    var x = cx + r * Math.cos(angles[i]);
+    var y = cy + r * Math.sin(angles[i]);
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = AREAS[i].color;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = AREAS[i].color;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    var lx = cx + (maxR + 26) * Math.cos(angles[i]);
+    var ly = cy + (maxR + 26) * Math.sin(angles[i]);
+    ctx.font = '15px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(AREAS[i].icon, lx, ly - 7);
+    ctx.font = 'bold 10px sans-serif';
+    ctx.fillStyle = isDark ? 'rgba(220,232,245,0.85)' : 'rgba(26,42,58,0.85)';
+    ctx.fillText(AREAS[i].name, lx, ly + 8);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// QUESTS
+// ═══════════════════════════════════════════════
+var questFilter = 'active';
+
+function addQuest() {
+  var name = document.getElementById('qName').value.trim();
+  if (!name) return;
+  var area = document.getElementById('qArea').value;
+  var xp = parseInt(document.getElementById('qXP').value);
+  S.quests.unshift({ id: S.nextId++, name: name, area: area, xp: xp, done: false, created: Date.now() });
+  document.getElementById('qName').value = '';
+  save(); renderQuests(); updateAllUI();
+}
+
+function completeQuest(id) {
+  var q = S.quests.filter(function(q) { return q.id === id; })[0];
+  if (!q || q.done) return;
+  q.done = true;
+  q.completedAt = Date.now();
+  S.totalDone++;
+  S.streak++;
+  awardXP(q.xp, q.area);
+  checkAchievements();
+  toast('✅ КВЕСТ ЗАВЕРШЁН', '+' + q.xp + ' XP', 'success');
+  renderQuests(); renderDashQuests();
+}
+
+function deleteQuest(id) {
+  S.quests = S.quests.filter(function(q) { return q.id !== id; });
+  save(); renderQuests(); updateAllUI();
+}
+
+function filterQuests(f, el) {
+  questFilter = f;
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  el.classList.add('active');
+  renderQuests();
+}
+
+function renderQuests() {
+  var el = document.getElementById('questList');
+  if (!el) return;
+  var quests = questFilter === 'active' ? S.quests.filter(function(q){return !q.done;})
+             : questFilter === 'done'   ? S.quests.filter(function(q){return q.done;})
+             : S.quests;
+  if (!quests.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">🗡</span><div class="empty-text">Нет квестов</div></div>';
+    return;
+  }
+  el.innerHTML = quests.map(function(q) {
+    var area = AREAS.filter(function(a){return a.id===q.area;})[0] || AREAS[0];
+    var xpCls = q.xp >= 100 ? 'badge-purple' : q.xp >= 50 ? 'badge-red' : q.xp >= 25 ? 'badge-gold' : 'badge-blue';
+    return '<div class="quest-item ' + (q.done ? 'done' : '') + '" onclick="completeQuest(' + q.id + ')">' +
+      '<div class="quest-check">' + (q.done ? '✓' : '') + '</div>' +
+      '<div class="quest-content"><div class="quest-name">' + q.name + '</div>' +
+      '<div class="quest-meta"><span class="badge badge-blue">' + area.icon + ' ' + area.name + '</span>' +
+      '<span class="badge ' + xpCls + '">+' + q.xp + ' XP</span>' +
+      (q.done ? '<span class="badge badge-green">✓ Завершён</span>' : '') + '</div></div>' +
+      '<div class="quest-actions"><button class="icon-btn" onclick="event.stopPropagation();deleteQuest(' + q.id + ')">✕</button></div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// AREAS
+// ═══════════════════════════════════════════════
+function renderAreas() {
+  var el = document.getElementById('areasGrid');
+  if (!el) return;
+  el.innerHTML = AREAS.map(function(a) {
+    var xp = S.areaXP[a.id] || 0;
+    var done = S.quests.filter(function(q){return q.area===a.id && q.done;}).length;
+    var total = S.quests.filter(function(q){return q.area===a.id;}).length;
+    var pct = Math.min(Math.round(xp / 500 * 100), 100);
+    var lvl = Math.max(1, Math.floor(xp/200)+1);
+    return '<div class="area-card">' +
+      '<div class="area-header"><div class="area-icon" style="background:' + a.bg + '">' + a.icon + '</div>' +
+      '<div><div class="area-name">' + a.name + '</div><div class="area-tasks">' + done + '/' + total + ' квестов</div></div>' +
+      '<span class="badge" style="margin-left:auto;background:' + a.bg + ';color:' + a.color + '">LVL ' + lvl + '</span></div>' +
+      '<div class="area-bar-label"><span>' + xp + ' XP</span><span>' + pct + '%</span></div>' +
+      '<div class="area-xp-bar"><div class="area-xp-fill" style="width:' + pct + '%;background:' + a.color + '"></div></div>' +
+      '<div class="area-stats">' +
+      '<div class="area-stat"><div class="area-stat-val" style="color:' + a.color + '">' + xp + '</div><div class="area-stat-lbl">XP</div></div>' +
+      '<div class="area-stat"><div class="area-stat-val" style="color:' + a.color + '">' + done + '</div><div class="area-stat-lbl">ГОТОВО</div></div>' +
+      '<div class="area-stat"><div class="area-stat-val" style="color:' + a.color + '">' + (total-done) + '</div><div class="area-stat-lbl">В РАБОТЕ</div></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// HABITS
+// ═══════════════════════════════════════════════
+function renderHabits() {
+  var el = document.getElementById('habitList');
+  if (!el) return;
+  if (!S.habits.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">📅</span><div class="empty-text">Нет привычек</div></div>';
+  } else {
+    el.innerHTML = S.habits.map(function(h) {
+      return '<div class="habit-row">' +
+        '<div class="habit-icon">' + h.icon + '</div>' +
+        '<div class="habit-name">' + h.name + '</div>' +
+        '<div class="habit-streak">🔥' + h.streak + '</div>' +
+        '<div class="habit-days-row">' + DAYS.map(function(d,i) {
+          return '<div class="hday ' + (h.days[i] ? 'hday-done' : '') + '" onclick="toggleHabit(' + h.id + ',' + i + ')">' + (h.days[i] ? '✓' : d) + '</div>';
+        }).join('') + '</div>' +
+        '<button class="icon-btn" onclick="deleteHabit(' + h.id + ')">✕</button></div>';
+    }).join('');
+  }
+  var statsEl = document.getElementById('habitStats');
+  if (statsEl) {
+    var totalDays = S.habits.reduce(function(acc, h) { return acc + h.days.filter(Boolean).length; }, 0);
+    var bestStreak = S.habits.reduce(function(max, h) { return Math.max(max, h.streak); }, 0);
+    var todayDone = S.habits.filter(function(h) { return h.days[todayIdx]; }).length;
+    statsEl.innerHTML = '<div style="display:flex;flex-direction:column;gap:12px">' +
+      '<div class="stat-box"><div class="stat-val" style="color:var(--accent3)">' + todayDone + '/' + S.habits.length + '</div><div class="stat-lbl">СЕГОДНЯ</div></div>' +
+      '<div class="stat-box"><div class="stat-val" style="color:var(--accent2)">' + bestStreak + '</div><div class="stat-lbl">МАКС СЕРИЯ</div></div>' +
+      '<div class="stat-box"><div class="stat-val" style="color:var(--accent)">' + totalDays + '</div><div class="stat-lbl">ВСЕГО ДНЕЙ</div></div>' +
+      '<div class="stat-box"><div class="stat-val" style="color:var(--gold)">' + (totalDays * 10) + '</div><div class="stat-lbl">XP</div></div></div>';
+  }
+}
+
+function toggleHabit(id, dayIdx) {
+  var h = S.habits.filter(function(h){return h.id===id;})[0];
+  if (!h || h.days[dayIdx]) return;
+  h.days[dayIdx] = 1;
+  var streak = 0;
+  for (var j = todayIdx; j >= 0; j--) { if (!h.days[j]) break; streak++; }
+  h.streak = streak;
+  awardXP(h.xp, null);
+  toast('📅 ПРИВЫЧКА', h.icon + ' ' + h.name + ' +' + h.xp + ' XP', 'info');
+  renderHabits();
+}
+
+function deleteHabit(id) {
+  S.habits = S.habits.filter(function(h){return h.id!==id;});
+  save(); renderHabits();
+}
+
+var selectedHabitIcon = '🎯';
+function showAddHabit() { document.getElementById('addHabitModal').style.display = 'flex'; }
+
+function addHabit() {
+  var name = document.getElementById('hName').value.trim();
+  if (!name) return;
+  var xp = parseInt(document.getElementById('hXP').value);
+  S.habits.push({ id: S.nextId++, name: name, icon: selectedHabitIcon, xp: xp, days:[0,0,0,0,0,0,0], streak:0 });
+  document.getElementById('hName').value = '';
+  closeModal('addHabitModal');
+  save(); renderHabits();
+}
+
+// ═══════════════════════════════════════════════
+// PARA
+// ═══════════════════════════════════════════════
+var currentPara = 'P';
+
+function renderPara() {
+  var tabsEl = document.getElementById('paraTabs');
+  if (!tabsEl) return;
+  tabsEl.innerHTML = PARA_CONFIG.map(function(p) {
+    return '<div class="para-tab ' + (currentPara === p.key ? 'active' : '') + '" onclick="switchPara(\'' + p.key + '\')">' +
+      '<span class="pt-icon">' + p.icon + '</span><div class="pt-name">' + p.name + '</div>' +
+      '<div class="pt-count">' + (S.para[p.key]||[]).length + '</div></div>';
+  }).join('');
+  renderParaItems();
+}
+
+function switchPara(key) { currentPara = key; renderPara(); }
+
+function renderParaItems() {
+  var cfg = PARA_CONFIG.filter(function(p){return p.key===currentPara;})[0];
+  var iconEl = document.getElementById('paraTabIcon');
+  var nameEl = document.getElementById('paraTabName');
+  if (iconEl) iconEl.textContent = cfg.icon;
+  if (nameEl) nameEl.textContent = cfg.name.toUpperCase();
+  var el = document.getElementById('paraItemsList');
+  if (!el) return;
+  var items = S.para[currentPara] || [];
+  if (!items.length) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">' + cfg.icon + '</span><div class="empty-text">' + cfg.desc + '</div></div>';
+    return;
+  }
+  el.innerHTML = items.map(function(item, i) {
+    return '<div class="para-item">' +
+      '<div class="para-item-icon" style="background:' + cfg.color + '18">' + (item.icon || cfg.icon) + '</div>' +
+      '<div><div class="para-item-title">' + item.name + '</div><div class="para-item-desc">' + (item.desc||'') + '</div></div>' +
+      '<div class="para-item-right"><span class="badge" style="background:' + cfg.color + '18;color:' + cfg.color + '">' + cfg.name + '</span>' +
+      '<button class="icon-btn" onclick="deletePara(\'' + currentPara + '\',' + i + ')">✕</button></div></div>';
+  }).join('');
+}
+
+function showAddPara() {
+  var cfg = PARA_CONFIG.filter(function(p){return p.key===currentPara;})[0];
+  var t = document.getElementById('addParaTitle');
+  if (t) t.textContent = cfg.icon + ' Добавить в ' + cfg.name;
+  var ic = document.getElementById('pIcon');
+  if (ic) ic.value = cfg.icon;
+  document.getElementById('addParaModal').style.display = 'flex';
+}
+
+function savePara() {
+  var name = document.getElementById('pName').value.trim();
+  if (!name) return;
+  if (!S.para[currentPara]) S.para[currentPara] = [];
+  var cfg = PARA_CONFIG.filter(function(p){return p.key===currentPara;})[0];
+  S.para[currentPara].push({ name: name, desc: document.getElementById('pDesc').value.trim(), icon: document.getElementById('pIcon').value.trim() || cfg.icon });
+  document.getElementById('pName').value = '';
+  document.getElementById('pDesc').value = '';
+  closeModal('addParaModal');
+  save(); renderPara(); checkAchievements();
+}
+
+function deletePara(key, idx) { S.para[key].splice(idx,1); save(); renderPara(); }
+
+// ═══════════════════════════════════════════════
+// PLANNER
+// ═══════════════════════════════════════════════
+function renderPlanner() {
+  var weekEl = document.getElementById('weekPlan');
+  var max = Math.max.apply(null, S.weeklyXP.concat([10]));
+  if (weekEl) {
+    weekEl.innerHTML = DAYS.map(function(d,i) {
+      var xp = S.weeklyXP[i] || 0;
+      var isToday = i === todayIdx;
+      return '<div class="plan-day ' + (isToday?'today':'') + '">' +
+        '<div class="plan-day-name">' + d + '</div>' +
+        '<div class="plan-day-bar"><div class="plan-day-fill" style="width:' + (xp/max*100) + '%"></div></div>' +
+        '<div class="plan-day-xp">' + xp + ' XP</div></div>';
+    }).join('');
+  }
+  var upcoming = document.getElementById('upcomingQuests');
+  if (upcoming) {
+    var active = S.quests.filter(function(q){return !q.done;}).slice(0,6);
+    if (!active.length) {
+      upcoming.innerHTML = '<div class="empty-state"><span class="empty-icon">🗓</span><div class="empty-text">Нет квестов</div></div>';
+    } else {
+      upcoming.innerHTML = active.map(function(q) {
+        var area = AREAS.filter(function(a){return a.id===q.area;})[0]||AREAS[0];
+        return '<div class="plan-day"><div style="font-size:16px">' + area.icon + '</div>' +
+          '<div style="flex:1;font-size:13px;font-weight:600">' + q.name + '</div>' +
+          '<span class="badge badge-gold">+' + q.xp + '</span></div>';
+      }).join('');
+    }
+  }
+  var monthEl = document.getElementById('monthOverview');
+  if (monthEl) {
+    var weekTotal = S.weeklyXP.reduce(function(a,b){return a+b;},0);
+    monthEl.innerHTML = [
+      { label:'XP за неделю', val: weekTotal, color:'var(--accent)' },
+      { label:'Квестов всего', val: S.totalDone, color:'var(--accent3)' },
+      { label:'Лучший день', val: Math.max.apply(null,S.weeklyXP) + ' XP', color:'var(--gold)' },
+      { label:'Уровень', val: 'LVL ' + getLevelNum(S.totalXP), color:'var(--purple)' }
+    ].map(function(s) {
+      return '<div class="stat-box" style="min-width:120px"><div class="stat-val" style="color:' + s.color + '">' + s.val + '</div><div class="stat-lbl">' + s.label + '</div></div>';
+    }).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════
+function checkAchievements() {
+  ACHIEVEMENTS_DEF.forEach(function(a) {
+    if (!S.achievements[a.id] && a.cond(S)) {
+      S.achievements[a.id] = Date.now();
+      if (a.xp > 0) S.totalXP += a.xp;
+      save();
+      setTimeout(function() { toast('🏆 ДОСТИЖЕНИЕ', a.icon + ' ' + a.name, 'gold'); }, 500);
+    }
+  });
+  updateAllUI();
+}
+
+function renderAchievements() {
+  var el = document.getElementById('achGrid');
+  if (!el) return;
+  var unlocked = Object.keys(S.achievements).length;
+  var total = ACHIEVEMENTS_DEF.length;
+  var pct = Math.round(unlocked / total * 100);
+  var progEl = document.getElementById('achProgress');
+  if (progEl) progEl.innerHTML = '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:6px"><span>' + unlocked + ' / ' + total + '</span><span>' + pct + '%</span></div><div class="xp-bar-outer"><div class="xp-bar-fill" style="width:' + pct + '%"></div></div>';
+  el.innerHTML = ACHIEVEMENTS_DEF.map(function(a) {
+    var done = !!S.achievements[a.id];
+    return '<div class="ach-item ' + (done?'unlocked':'') + '">' +
+      '<span class="ach-icon">' + a.icon + '</span>' +
+      '<div class="ach-name">' + a.name + '</div>' +
+      '<div class="ach-xp">' + (done ? '✓ Получено' : (a.xp?'+'+a.xp+' XP':'')) + '</div></div>';
+  }).join('');
+  var titlesEl = document.getElementById('titlesGrid');
+  if (titlesEl) {
+    var lvlNum = getLevelNum(S.totalXP);
+    titlesEl.innerHTML = RANKS.map(function(r) {
+      var done = lvlNum >= r.minLvl;
+      return '<div class="ach-item ' + (done?'unlocked':'') + '">' +
+        '<span class="ach-icon" style="color:' + r.color + '">' + r.rank + '</span>' +
+        '<div class="ach-name">' + r.title + '</div>' +
+        '<div class="ach-xp">LVL ' + r.minLvl + '+</div></div>';
+    }).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════
+function renderSettings() {
+  var nameEl = document.getElementById('settingName');
+  if (nameEl) nameEl.value = S.name;
+  var clsEl = document.getElementById('settingClass');
+  if (clsEl) clsEl.value = S.charClass;
+  var picker = document.getElementById('avatarPicker');
+  if (picker) {
+    picker.innerHTML = AVATARS.map(function(av) {
+      return '<div onclick="selectAvatar(\'' + av + '\')" style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:2px solid ' + (av===S.avatar?'var(--accent)':'var(--border)') + ';background:' + (av===S.avatar?'var(--accent-dim)':'var(--bg-card)') + ';transition:var(--transition)">' + av + '</div>';
+    }).join('');
+  }
+}
+
+function selectAvatar(av) { S.avatar = av; renderSettings(); }
+
+function saveSettings() {
+  var nameEl = document.getElementById('settingName');
+  S.name = (nameEl ? nameEl.value.trim() : '') || 'ГЕРОЙ';
+  var clsEl = document.getElementById('settingClass');
+  S.charClass = clsEl ? clsEl.value : 'mage';
+  save(); updateAllUI();
+  toast('⚙ НАСТРОЙКИ', 'Персонаж сохранён!', 'success');
+}
+
+function resetAll() {
+  if (!confirm('Сбросить все данные?')) return;
+  localStorage.removeItem('liferpg_v3');
+  S = defaultState();
+  save(); updateAllUI(); navigate('dashboard');
+  toast('🔄 СБРОС', 'Данные сброшены', 'info');
+}
+
+// ═══════════════════════════════════════════════
+// DAILY QUESTS (SOLO LEVELING)
+// ═══════════════════════════════════════════════
+function generateDailyQuests() {
+  var today = new Date().toDateString();
+  if (S.dailyQuestDate === today && S.dailyQuests && S.dailyQuests.length > 0) return;
+  var pool = DAILY_POOL.slice().sort(function(){return Math.random()-0.5;}).slice(0,5);
+  var deadline = new Date(); deadline.setHours(23,59,59,999);
+  S.dailyQuests = pool.map(function(q, i) {
+    return { id: 'dq_'+i, name:q.name, icon:q.icon, xp:q.xp, stat:q.stat, area:q.area, done:false, deadline:deadline.getTime() };
+  });
+  S.dailyQuestDate = today;
+  save();
+}
+
+function completeDailyQuest(id) {
+  var q = (S.dailyQuests||[]).filter(function(q){return q.id===id;})[0];
+  if (!q || q.done) return;
+  q.done = true;
+  S.stats[q.stat] = (S.stats[q.stat]||10) + 1;
+  S.totalDone++;
+  awardXP(q.xp, q.area);
+  save(); checkAchievements(); renderDailyQuests(); updateAllUI();
+  toast('⚡ ЗАДАНИЕ СИСТЕМЫ', q.icon+' '+q.name+' +'+q.xp+' XP · '+q.stat+'+1', 'gold');
+}
+
+function activatePenalty() {
+  S.penaltyActive = true;
+  S.penaltyEndTime = Date.now() + 2*60*60*1000;
+  save();
+  showSystemAlert('☠', '#ef5350', 'ШТРАФНАЯ ЗОНА АКТИВНА! Ты не выполнил задания Системы.');
+}
+
+function renderDailyQuests() {
+  generateDailyQuests();
+  var el = document.getElementById('dailyQuestList');
+  if (!el) return;
+  var now = Date.now();
+  var done = (S.dailyQuests||[]).filter(function(q){return q.done;}).length;
+  var total = (S.dailyQuests||[]).length;
+  var progEl = document.getElementById('dailyProgress');
+  if (progEl) progEl.textContent = done+'/'+total;
+  var pb = document.getElementById('penaltyBanner');
+  if (pb) pb.style.display = S.penaltyActive ? 'flex' : 'none';
+  el.innerHTML = (S.dailyQuests||[]).map(function(q) {
+    var expired = !q.done && now > q.deadline;
+    var ms = q.deadline - now;
+    var h = Math.max(0,Math.floor(ms/3600000));
+    var m = Math.max(0,Math.floor((ms%3600000)/60000));
+    var timer = expired ? 'ПРОСРОЧЕНО' : (h+'ч '+m+'м');
+    var urgent = !q.done && ms < 3600000 && ms > 0;
+    return '<div class="daily-quest-item' + (q.done?' done':'') + (expired?' expired':'') + '" onclick="completeDailyQuest(\''+q.id+'\')">' +
+      '<div style="font-size:20px;width:28px;flex-shrink:0">'+q.icon+'</div>' +
+      '<div style="flex:1"><div style="font-size:13px;font-weight:600' + (q.done?';text-decoration:line-through;opacity:0.6':'') + '">'+q.name+'</div>' +
+      '<div style="display:flex;gap:6px;margin-top:3px"><span class="badge badge-gold">+'+q.xp+' XP</span><span class="badge badge-purple">'+q.stat+'+1</span></div></div>' +
+      (q.done ? '<span style="color:var(--accent3);font-size:18px">✓</span>' : '<span class="daily-timer'+(urgent?' urgent':'')+'">'+timer+'</span>') +
+      '</div>';
+  }).join('');
+}
+
+function updateDailyTimers() {
+  var resetEl = document.getElementById('dailyReset');
+  if (resetEl) {
+    var now = new Date();
+    var midnight = new Date(); midnight.setHours(24,0,0,0);
+    var ms = midnight - now;
+    var h = Math.floor(ms/3600000);
+    var m = Math.floor((ms%3600000)/60000);
+    var s = Math.floor((ms%60000)/1000);
+    resetEl.textContent = pad(h)+':'+pad(m)+':'+pad(s);
+  }
+  if (S.penaltyActive) {
+    var timerEl = document.getElementById('penaltyTimer');
+    if (timerEl) {
+      var ms2 = Math.max(0, S.penaltyEndTime - Date.now());
+      timerEl.textContent = pad(Math.floor(ms2/3600000))+':'+pad(Math.floor((ms2%3600000)/60000))+':'+pad(Math.floor((ms2%60000)/1000));
+      if (ms2 === 0) { S.penaltyActive = false; save(); renderDailyQuests(); }
+    }
+  }
+}
+
+function pad(n) { return String(n).padStart(2,'0'); }
+
+setInterval(updateDailyTimers, 1000);
+setInterval(function() {
+  var now = Date.now();
+  if ((S.dailyQuests||[]).length && (S.dailyQuests||[]).some(function(q){return !q.done && now > q.deadline;}) && !S.penaltyActive) {
+    activatePenalty();
+  }
+}, 60000);
+
+// ═══════════════════════════════════════════════
+// STATS PANEL (Solo Leveling)
+// ═══════════════════════════════════════════════
+function renderStatsPanel() {
+  var el = document.getElementById('statsPanel');
+  if (!el) return;
+  if (!S.stats) S.stats = { STR:10, AGI:10, INT:10, VIT:10, SEN:10 };
+  if (typeof S.statPoints === 'undefined') S.statPoints = 0;
+  var banner = document.getElementById('statPointsBanner');
+  if (banner) banner.style.display = S.statPoints > 0 ? 'flex' : 'none';
+  var fsp = document.getElementById('freeStatPoints');
+  if (fsp) fsp.textContent = S.statPoints;
+  el.innerHTML = STAT_DEFS.map(function(sd) {
+    var val = S.stats[sd.id] || 10;
+    return '<div class="stat-card" style="--stat-color:' + sd.color + '">' +
+      '<span class="stat-icon">' + sd.icon + '</span>' +
+      '<div class="stat-num">' + val + '</div>' +
+      '<div class="stat-name">' + sd.id + '</div>' +
+      (S.statPoints > 0 ? '<button class="stat-add-btn" onclick="event.stopPropagation();addStatPoint(\''+sd.id+'\')">+</button>' : '') +
+      '</div>';
+  }).join('');
+}
+
+function addStatPoint(statId) {
+  if (!S.statPoints || S.statPoints <= 0) return;
+  S.stats[statId] = (S.stats[statId]||10) + 1;
+  S.statPoints--;
+  save(); renderStatsPanel();
+  toast('💪 ХАРАКТЕРИСТИКА', statId+' → '+S.stats[statId], 'gold');
+}
+
+// ═══════════════════════════════════════════════
+// RANK UP / SYSTEM ALERTS
+// ═══════════════════════════════════════════════
+function showRankUp(newLvl, oldLvl) {
+  var rank = getRank(newLvl);
+  var prevRank = getRank(oldLvl);
+  if (rank.rank !== prevRank.rank) {
+    showSystemAlert(rank.rank, rank.color, 'ПОЗДРАВЛЯЕМ! Вы достигли ' + rank.label + ' — ' + rank.title);
+  } else {
+    var overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.innerHTML = '<div class="overlay-card" style="border-color:'+rank.color+';box-shadow:0 0 60px '+rank.glow+'">' +
+      '<span class="overlay-icon">⭐</span>' +
+      '<div class="overlay-title" style="color:'+rank.color+'">УРОВЕНЬ '+newLvl+'!</div>' +
+      '<div class="overlay-sub">+3 очка характеристик</div>' +
+      '<button class="btn btn-gold" onclick="this.closest(\'.overlay\').remove()">ПРИНЯТЬ</button>' +
+      '</div>';
+    overlay.addEventListener('click', function(e) { if (e.target===overlay) overlay.remove(); });
+    document.body.appendChild(overlay);
+  }
+}
+
+function showSystemAlert(rankText, color, message) {
+  document.querySelectorAll('.sys-notif-overlay,.sys-notif').forEach(function(e){e.remove();});
+  var ov = document.createElement('div');
+  ov.className = 'sys-notif-overlay';
+  document.body.appendChild(ov);
+  var box = document.createElement('div');
+  box.className = 'sys-notif';
+  box.style.borderColor = color;
+  box.style.boxShadow = '0 0 60px '+color+'66, 0 20px 60px rgba(0,0,0,0.6)';
+  box.innerHTML =
+    '<div style="font-size:11px;letter-spacing:3px;color:var(--text-muted);margin-bottom:8px">[ СИСТЕМА ]</div>' +
+    '<div class="sys-notif-rank" style="color:'+color+';text-shadow:0 0 30px '+color+'">'+rankText+'</div>' +
+    '<div class="sys-notif-text">'+message+'</div>' +
+    '<button class="btn btn-gold" onclick="document.querySelectorAll(\'.sys-notif-overlay,.sys-notif\').forEach(function(e){e.remove()})">ПРИНЯТЬ</button>';
+  document.body.appendChild(box);
+  requestAnimationFrame(function() { ov.classList.add('visible'); box.classList.add('visible'); });
+}
+
+// ═══════════════════════════════════════════════
+// THEME / SIDEBAR
+// ═══════════════════════════════════════════════
+function toggleTheme() {
+  S.theme = S.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', S.theme);
+  document.getElementById('themeIcon').textContent = S.theme === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = S.theme === 'dark' ? 'Светлая' : 'Тёмная';
+  save();
+  setTimeout(drawRadarChart, 50);
+}
+
+function toggleSidebar() {
+  var sb = document.querySelector('.sidebar');
+  sb.classList.toggle('collapsed');
+  S.sidebarCollapsed = sb.classList.contains('collapsed');
+  save();
+}
+
+// ═══════════════════════════════════════════════
+// TOAST / MODALS
+// ═══════════════════════════════════════════════
+var toastTimer;
+function toast(title, text, type) {
+  var existing = document.querySelectorAll('.toast');
+  existing.forEach(function(t){t.remove();});
+  clearTimeout(toastTimer);
+  var el = document.createElement('div');
+  el.className = 'toast toast-' + (type||'info');
+  el.innerHTML = '<div class="toast-title">'+title+'</div><div class="toast-text">'+text+'</div>';
+  document.body.appendChild(el);
+  toastTimer = setTimeout(function(){el.remove();}, 3500);
+}
+
+function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+// ═══════════════════════════════════════════════
+// HABIT ICON PICKER
+// ═══════════════════════════════════════════════
+function setupHabitIcons() {
+  var picker = document.getElementById('habitIconPicker');
+  if (!picker) return;
+  var icons = ['🧘','🏃','💧','📚','🥗','🛌','🎯','💪','🧠','✍','🌅','🎸'];
+  picker.innerHTML = icons.map(function(ic) {
+    return '<div onclick="selectHabitIcon(\''+ic+'\')" data-icon="'+ic+'" style="width:36px;height:36px;border-radius:8px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:var(--transition)">'+ic+'</div>';
+  }).join('');
+}
+
+function selectHabitIcon(ic) {
+  selectedHabitIcon = ic;
+  var divs = document.querySelectorAll('#habitIconPicker > div');
+  for (var i = 0; i < divs.length; i++) {
+    var d = divs[i];
+    d.style.borderColor = d.getAttribute('data-icon') === ic ? 'var(--accent)' : 'var(--border)';
+    d.style.background = d.getAttribute('data-icon') === ic ? 'var(--accent-dim)' : '';
+  }
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function init() {
+  // Theme
+  document.documentElement.setAttribute('data-theme', S.theme);
+  var themeIcon = document.getElementById('themeIcon');
+  var themeLabel = document.getElementById('themeLabel');
+  if (themeIcon) themeIcon.textContent = S.theme === 'dark' ? '☀️' : '🌙';
+  if (themeLabel) themeLabel.textContent = S.theme === 'dark' ? 'Светлая' : 'Тёмная';
+
+  // Sidebar state
+  if (S.sidebarCollapsed) {
+    var sb = document.querySelector('.sidebar');
+    if (sb) sb.classList.add('collapsed');
+  }
+
+  // Seed demo data if fresh
+  if (!S.quests.length) {
+    S.quests = [
+      { id:1, name:'Прочитать 10 страниц книги', area:'learning',   xp:25, done:false, created:Date.now() },
+      { id:2, name:'Тренировка 30 минут',         area:'fitness',    xp:50, done:false, created:Date.now() },
+      { id:3, name:'Изучить новую концепцию',      area:'work',       xp:25, done:false, created:Date.now() },
+      { id:4, name:'Записать 3 идеи',              area:'creativity', xp:25, done:false, created:Date.now() }
+    ];
+    save();
+  }
+  if (!S.para.P.length) {
+    S.para.P = [{ name:'Запуск сайта', desc:'Создать лендинг', icon:'🚀' }];
+    S.para.A = [{ name:'Здоровье', desc:'Поддержание формы', icon:'💪' }];
+    S.para.R = [{ name:'Книги', desc:'GTD, PARA, Atomic Habits', icon:'📚' }];
+    save();
+  }
+
+  setupHabitIcons();
+  updateAllUI();
+  renderDashboard();
+
+  // Resize/orientation for canvas
+  window.addEventListener('resize', function() {
+    clearTimeout(window._rt);
+    window._rt = setTimeout(function() {
+      if (document.getElementById('page-dashboard').classList.contains('active')) drawRadarChart();
+    }, 150);
+  });
+  window.addEventListener('orientationchange', function() {
+    setTimeout(function() {
+      if (document.getElementById('page-dashboard').classList.contains('active')) drawRadarChart();
+    }, 300);
+  });
+
+  // iOS PWA
+  if (window.navigator.standalone) {
+    document.body.style.paddingTop = 'env(safe-area-inset-top)';
+  }
+
+  // Modals close on backdrop
+  document.querySelectorAll('.modal').forEach(function(m) {
+    m.addEventListener('click', function(e) { if (e.target===m) m.style.display='none'; });
+  });
+
+  setTimeout(function() {
+    var fill = document.getElementById('xpBarFill');
+    if (fill) {
+      var d = getCurrentXP(S.totalXP);
+      fill.style.width = Math.round(d.current/d.needed*100)+'%';
+    }
+    drawRadarChart();
+  }, 300);
+
+  // Expose toast globally for SW script
+  window._toast = toast;
+
+  // Show iOS install banner if on iOS Safari (not standalone)
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isSafari = /safari/i.test(navigator.userAgent) && !/chrome/i.test(navigator.userAgent);
+  var isStandalone = window.navigator.standalone === true;
+  if (isIOS && isSafari && !isStandalone) {
+    // Show banner after 3 seconds
+    setTimeout(function() {
+      var banner = document.getElementById('iosInstallBanner');
+      if (banner) {
+        banner.style.display = 'flex';
+        // Auto-hide after 10s
+        setTimeout(function() { banner.style.display = 'none'; }, 10000);
+      }
+    }, 3000);
+  }
+}
+
+function installPWA() {
+  if (window._installPrompt) {
+    window._installPrompt.prompt();
+    window._installPrompt.userChoice.then(function(result) {
+      if (result.outcome === 'accepted') {
+        var btn = document.getElementById('pwaInstallBtn');
+        if (btn) btn.style.display = 'none';
+      }
+      window._installPrompt = null;
+    });
+  }
+}
+
+init();
+
+</script>
+
+<div id="iosInstallBanner" style="display:none;position:fixed;bottom:80px;left:12px;right:12px;background:var(--bg-panel);border:1px solid var(--border-hi);border-radius:14px;padding:14px 16px;z-index:500;box-shadow:var(--shadow);flex-direction:column;gap:8px">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="font-size:28px">⚔️</div>
+    <div style="flex:1">
+      <div style="font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--accent)">Добавить на экран домой</div>
+      <div style="font-size:11px;color:var(--text-sec)">Нажми <strong>Поделиться</strong> → <strong>На экран Домой</strong></div>
+    </div>
+    <button onclick="document.getElementById('iosInstallBanner').style.display='none'" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:4px">✕</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)">
+    <span style="background:var(--accent-dim);border-radius:6px;padding:3px 8px;color:var(--accent)">1</span> Нажми кнопку «Поделиться» внизу Safari
+    <span style="font-size:16px">⎋</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted)">
+    <span style="background:var(--accent-dim);border-radius:6px;padding:3px 8px;color:var(--accent)">2</span> Выбери «На экран «Домой»»
+    <span style="font-size:16px">➕</span>
+  </div>
+</div>
+
+<button id="pwaInstallBtn" onclick="installPWA()" style="display:none;position:fixed;bottom:80px;right:16px;background:var(--accent);color:#000;border:none;border-radius:12px;padding:10px 16px;font-family:'Cinzel',serif;font-size:12px;font-weight:700;cursor:pointer;z-index:500;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,200,255,0.4)">
+  <span>📲</span> Установить
+</button>
+
+<script id="sw-register">
+(function() {
+  // Register service worker via blob URL (works for local files too!)
+  if ('serviceWorker' in navigator) {
+    var swCode = "\nconst CACHE = 'liferpg-v3';\nconst OFFLINE_URL = location.href;\n\nself.addEventListener('install', function(e) {\n  e.waitUntil(\n    caches.open(CACHE).then(function(cache) {\n      return cache.add(OFFLINE_URL);\n    }).catch(function(){})\n  );\n  self.skipWaiting();\n});\n\nself.addEventListener('activate', function(e) {\n  e.waitUntil(\n    caches.keys().then(function(keys) {\n      return Promise.all(keys.filter(function(k){ return k !== CACHE; }).map(function(k){ return caches.delete(k); }));\n    })\n  );\n  self.clients.claim();\n});\n\nself.addEventListener('fetch', function(e) {\n  if (e.request.mode === 'navigate') {\n    e.respondWith(\n      fetch(e.request).catch(function() {\n        return caches.match(OFFLINE_URL);\n      })\n    );\n    return;\n  }\n  e.respondWith(\n    caches.match(e.request).then(function(cached) {\n      return cached || fetch(e.request).then(function(resp) {\n        var clone = resp.clone();\n        caches.open(CACHE).then(function(c){ c.put(e.request, clone); });\n        return resp;\n      }).catch(function(){return cached;});\n    })\n  );\n});\n";
+    var blob = new Blob([swCode], { type: 'application/javascript' });
+    var swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl, { scope: './' })
+      .then(function(reg) {
+        console.log('[PWA] Service worker registered, scope:', reg.scope);
+        // Cache self (the HTML page)
+        if ('caches' in window) {
+          caches.open('liferpg-v3').then(function(cache) {
+            cache.add(location.href).catch(function(){});
+          });
+        }
+      })
+      .catch(function(err) {
+        console.log('[PWA] SW registration failed (expected for file://)', err.message);
+      });
+  }
+
+  // Install prompt for Android
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    window._installPrompt = e;
+    var btn = document.getElementById('pwaInstallBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+
+  window.addEventListener('appinstalled', function() {
+    var btn = document.getElementById('pwaInstallBtn');
+    if (btn) btn.style.display = 'none';
+    if (window._toast) window._toast('📱 УСТАНОВЛЕНО', 'Life RPG добавлен на экран!', 'gold');
+  });
+})();
+</script>
+
+<script>
+window.addEventListener('online',  function(){ document.getElementById('offlineBar').classList.remove('show'); });
+window.addEventListener('offline', function(){ document.getElementById('offlineBar').classList.add('show'); });
+if (!navigator.onLine) document.getElementById('offlineBar').classList.add('show');
+</script>
+</body>
+</html>
